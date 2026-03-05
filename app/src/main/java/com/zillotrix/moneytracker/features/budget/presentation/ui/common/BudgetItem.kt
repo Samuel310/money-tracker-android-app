@@ -12,19 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 
 @Composable
-fun BudgetItem(){
+fun BudgetItem(budgetInfo: BudgetInfo){
     Row(
         modifier = Modifier.height(45.dp).padding(start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Home",
+            text = budgetInfo.name,
             modifier = Modifier.padding(end = 8.dp).weight(1f),
         )
         Text(
-            text = "5000",
+            text = budgetInfo.amount.toString(),
         )
         IconButton(onClick = {}) {
             Icon(

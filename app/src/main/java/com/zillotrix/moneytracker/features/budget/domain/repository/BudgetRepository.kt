@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface BudgetRepository {
     suspend fun setBudget(budgetInfo: BudgetInfo) : RepoResult<Boolean, String>
-    fun getAllBudgetByMonth(monthYear: Int): Flow<List<BudgetInfo>>
+    fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String>
     suspend fun setCategory(name: String) : RepoResult<BudgetCategory, String>
     fun getAllCategories() : Flow<List<BudgetCategory>>
     suspend fun setIncome(income: Income)

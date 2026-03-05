@@ -11,3 +11,11 @@ fun Int.toYearMonth(): YearMonth {
     val month = this % 100
     return YearMonth.of(year, month)
 }
+
+fun YearMonth.toMonthName(locale: java.util.Locale = java.util.Locale.getDefault()): String {
+    return this.month.getDisplayName(java.time.format.TextStyle.FULL, locale)
+}
+
+fun YearMonth.toYearString(): String {
+    return this.year.toString()
+}

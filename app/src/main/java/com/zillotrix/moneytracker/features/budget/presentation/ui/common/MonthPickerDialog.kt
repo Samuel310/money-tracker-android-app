@@ -182,7 +182,7 @@ fun MonthPickerDialog(
                     OutlinedButton(
                         modifier = Modifier.padding(end = 16.dp),
                         onClick = {
-                            onDismiss(YearMonth.of(year, months.indexOf(month) + 1))
+                            onDismiss(null)
                         },
                         shape = CircleShape,
                     ) {

@@ -1,5 +1,7 @@
 package com.zillotrix.moneytracker.features.budget.presentation.ui
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,18 +23,52 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.zillotrix.moneytracker.core.ui.theme.MoneyTrackerTheme
+import com.zillotrix.moneytracker.core.utils.toMonthName
+import com.zillotrix.moneytracker.core.utils.toYearString
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetItem
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthPickerDialog
+import com.zillotrix.moneytracker.features.budget.presentation.view_model.BudgetScreenViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit){
+fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<BudgetScreenViewModel>()){
+
+    val context = LocalContext.current
+    val state by budgetScreenViewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        launch {
+            budgetScreenViewModel.onError.collect { errorMessage ->
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    if(state.showMonthPickerDialog){
+        MonthPickerDialog(
+            selectedYearMonth = state.currentYearMonth,
+            onDismiss = { yearMonth ->
+                if(yearMonth != null){
+                    budgetScreenViewModel.onMonthChanged(yearMonth = yearMonth)
+                }
+                budgetScreenViewModel.showMonthPickerDialog(show = false)
+            }
+        )
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToNewBudgetScreen) {
@@ -52,30 +88,36 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit){
                 modifier = Modifier.height(45.dp).padding(start = 8.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    budgetScreenViewModel.onMonthChanged(state.currentYearMonth.minusMonths(1))
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Previous Month"
                     )
                 }
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).clickable(onClick = {
+                        budgetScreenViewModel.showMonthPickerDialog(show = true)
+                    }),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "January",
+                        text = state.currentYearMonth.toMonthName(),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     )
                     Text(
-                        text = "2026",
+                        text = state.currentYearMonth.toYearString(),
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                     )
                 }
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    budgetScreenViewModel.onMonthChanged(state.currentYearMonth.plusMonths(1))
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Next Month"
@@ -113,11 +155,14 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit){
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-
-            Text("Contribution",  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
-            BudgetItem()
-            BudgetItem()
-            BudgetItem()
+            if(state.budgetInfoMap.isNotEmpty()){
+                for(categoryName in state.budgetInfoMap.keys){
+                    Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+                    state.budgetInfoMap[categoryName]?.forEach { budgetInfo ->
+                        BudgetItem(budgetInfo)
+                    }
+                }
+            }
         }
     }
 }

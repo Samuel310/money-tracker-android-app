@@ -63,11 +63,17 @@ class BudgetRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getAllBudgetByMonth(monthYear: Int): Flow<List<BudgetInfo>> {
-        return budgetDao.getBudgetsWithCategoryForMonth(monthYear).map { budgetWithCategoryRelationList ->
-            budgetWithCategoryRelationList.map { budgetWithCategoryRelation ->
-                budgetWithCategoryRelation.toDomain()
+    override fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
+        try {
+            val res = budgetDao.getBudgetsWithCategoryForMonth(yearMonth).map { budgetWithCategoryRelationList ->
+                budgetWithCategoryRelationList.map { budgetWithCategoryRelation ->
+                    budgetWithCategoryRelation.toDomain()
+                }
             }
+            return RepoResult.Success(res)
+        }catch (e: Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to load budget info")
         }
     }
 
