@@ -1,11 +1,11 @@
-package com.zillotrix.moneytracker.core.db.dao
+package com.zillotrix.moneytracker.features.budget.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.zillotrix.moneytracker.features.budget.data.local.entity.IncomeEntity
 import kotlinx.coroutines.flow.Flow
-import com.zillotrix.moneytracker.core.db.entity.IncomeEntity
 
 @Dao
 interface IncomeDao {

@@ -3,10 +3,10 @@ package com.zillotrix.moneytracker.core.di
 import android.content.Context
 import androidx.room.Room
 import com.zillotrix.moneytracker.core.db.AppDatabase
-import com.zillotrix.moneytracker.core.db.dao.BudgetCategoryDao
-import com.zillotrix.moneytracker.core.db.dao.BudgetDao
+import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
+import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.core.db.dao.ExpenseDao
-import com.zillotrix.moneytracker.core.db.dao.IncomeDao
+import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

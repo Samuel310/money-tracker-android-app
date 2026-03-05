@@ -1,4 +1,4 @@
-package com.zillotrix.moneytracker.core.db.entity
+package com.zillotrix.moneytracker.features.budget.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -27,5 +27,4 @@ data class BudgetEntity(
     val amount: Long,
     val categoryId: Long,
     val monthYear: Int,
-    val isSettled: Boolean,
 )

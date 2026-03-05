@@ -1,9 +1,12 @@
-package com.zillotrix.moneytracker.features.budget.presentation.components.common
+package com.zillotrix.moneytracker.features.budget.presentation.ui.common
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,17 +21,16 @@ fun BudgetItem(){
     ) {
         Text(
             text = "Home",
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(end = 8.dp).weight(1f),
         )
         Text(
             text = "5000",
-            modifier = Modifier.weight(1f),
         )
-        Checkbox(
-            checked = false,
-            onCheckedChange = {
-
-            }
-        )
+        IconButton(onClick = {}) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Go to expenses screen"
+            )
+        }
     }
 }

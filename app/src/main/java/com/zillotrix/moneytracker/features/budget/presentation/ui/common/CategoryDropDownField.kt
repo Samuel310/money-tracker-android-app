@@ -1,4 +1,4 @@
-package com.zillotrix.moneytracker.features.budget.presentation.components.common
+package com.zillotrix.moneytracker.features.budget.presentation.ui.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,23 +16,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.PopupProperties
+import com.zillotrix.moneytracker.features.budget.domain.model.BudgetCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryDropdownField() {
+fun CategoryDropdownField(
+    selectedBudgetCategory: BudgetCategory?,
+    budgetCategories: List<BudgetCategory>,
+    onCategoryChanged: (selectedBudgetCategory: BudgetCategory) -> Unit
+) {
 
-    val categories = listOf(
-        "Food", "Rent", "Travel", "Entertainment", "Petrol", "Electricity"
-    )
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text by remember { mutableStateOf(TextFieldValue(selectedBudgetCategory?.name ?: "")) }
     var expanded by remember { mutableStateOf(false) }
 
     val filteredCategories = remember(text.text) {
-        if (text.text.isBlank()) categories
-        else categories.filter {
-            it.contains(text.text, ignoreCase = true)
+        if (text.text.isBlank()) budgetCategories
+        else budgetCategories.filter {
+            it.name.contains(text.text, ignoreCase = true)
         }
+    }
+
+    if(text.text.isNotEmpty() && filteredCategories.isEmpty()){
+        onCategoryChanged(BudgetCategory(name = text.text, id = 0L))
     }
 
     Box {
@@ -58,10 +63,11 @@ fun CategoryDropdownField() {
         ) {
             filteredCategories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category) },
+                    text = { Text(category.name) },
                     onClick = {
-                        text = TextFieldValue(category)
+                        text = TextFieldValue(category.name)
                         expanded = false
+                        onCategoryChanged(category)
                     },
                     modifier = Modifier.fillMaxWidth()
                 )

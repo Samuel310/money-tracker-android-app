@@ -1,4 +1,4 @@
-package com.zillotrix.moneytracker.features.budget.presentation.components
+package com.zillotrix.moneytracker.features.budget.presentation.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,22 +24,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.zillotrix.moneytracker.core.navigation.Screen
 import com.zillotrix.moneytracker.core.ui.theme.MoneyTrackerTheme
-import com.zillotrix.moneytracker.features.budget.presentation.components.common.BudgetItem
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetItem
 
 @Composable
-fun BudgetScreen(navController: NavHostController){
+fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit){
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate(Screen.NewBudgetScreen.route)
-            }) {
+            FloatingActionButton(onClick = onNavigateToNewBudgetScreen) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add New Budget"
@@ -55,14 +52,34 @@ fun BudgetScreen(navController: NavHostController){
                 modifier = Modifier.height(45.dp).padding(start = 8.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "January",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Previous Month"
+                    )
+                }
+                Column(
                     modifier = Modifier.weight(1f),
-                )
-                Button(onClick = {}) {
-                    Text("Change Month")
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "January",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = "2026",
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Next Month"
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -80,17 +97,20 @@ fun BudgetScreen(navController: NavHostController){
                 IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Change month"
+                        contentDescription = "Edit Income"
                     )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "Budget",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-            )
+            Row {
+                Text(
+                    "Budget",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp).weight(1f)
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
 
 
@@ -105,14 +125,13 @@ fun BudgetScreen(navController: NavHostController){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewBudgetScreen(){
-    val navController = rememberNavController()
     MoneyTrackerTheme{
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            BudgetScreen(navController)
+            BudgetScreen(onNavigateToNewBudgetScreen = {})
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
 
 @Entity(
     tableName = "expense",
