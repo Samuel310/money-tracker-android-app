@@ -1,6 +1,8 @@
 package com.zillotrix.moneytracker.core.utils
 
+import java.time.LocalTime
 import java.time.YearMonth
+import java.time.ZoneId
 
 fun YearMonth.toIntYYYYMM(): Int {
     return this.year * 100 + this.monthValue
@@ -18,4 +20,21 @@ fun YearMonth.toMonthName(locale: java.util.Locale = java.util.Locale.getDefault
 
 fun YearMonth.toYearString(): String {
     return this.year.toString()
+}
+
+fun YearMonth.getMonthRange(): Pair<Long, Long> {
+    val ym = this
+
+    val startOfMonth = ym.atDay(1)
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli()
+
+    val endOfMonth = ym.atEndOfMonth()
+        .atTime(LocalTime.MAX)
+        .atZone(ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli()
+
+    return Pair(startOfMonth, endOfMonth)
 }

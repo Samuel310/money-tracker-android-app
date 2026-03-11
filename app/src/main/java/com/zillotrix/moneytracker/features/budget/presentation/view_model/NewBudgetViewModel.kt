@@ -84,6 +84,7 @@ class NewBudgetViewModel @Inject constructor(private val budgetRepository: Budge
                     categoryId = _state.value.selectedBudgetCategory?.id ?: 0L,
                     monthYear = _state.value.monthYear,
                     categoryName = _state.value.selectedBudgetCategory?.name ?: "",
+                    totalAmtSpent = 0L
                 )
             )){
                 is RepoResult.Success -> {

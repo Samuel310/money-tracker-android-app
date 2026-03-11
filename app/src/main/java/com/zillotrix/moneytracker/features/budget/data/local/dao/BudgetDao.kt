@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
-import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryRelation
+import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryAndExpensesRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,13 +23,22 @@ interface BudgetDao {
 
     @Transaction
     @Query("""
-        SELECT * FROM budget
-        WHERE monthYear = :monthYear
-        ORDER BY name ASC
+        SELECT 
+        budget.*, 
+        SUM(COALESCE(expense.amount, 0)) as totalAmtSpent 
+        FROM budget
+        LEFT JOIN expense ON budget.id = expense.budgetId 
+            AND expense.date >= :startDate 
+            AND expense.date <= :endDate
+        WHERE budget.monthYear = :yearMonth
+        GROUP BY budget.id
+        ORDER BY budget.name ASC
     """)
-    fun getBudgetsWithCategoryForMonth(
-        monthYear: Int
-    ): Flow<List<BudgetWithCategoryRelation>>
+    fun getBudgetsWithCategoryAndExpensesForMonth(
+        yearMonth: Int,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<BudgetWithCategoryAndExpensesRelation>>
 
     @Query("""
         SELECT * FROM budget

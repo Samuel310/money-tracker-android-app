@@ -1,6 +1,8 @@
 package com.zillotrix.moneytracker.features.budget.data.repository
 
 import com.zillotrix.moneytracker.core.utils.RepoResult
+import com.zillotrix.moneytracker.core.utils.getMonthRange
+import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
@@ -65,7 +67,12 @@ class BudgetRepositoryImpl @Inject constructor(
 
     override fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
         try {
-            val res = budgetDao.getBudgetsWithCategoryForMonth(yearMonth).map { budgetWithCategoryRelationList ->
+            val (startDate, endDate) = yearMonth.toYearMonth().getMonthRange()
+            val res = budgetDao.getBudgetsWithCategoryAndExpensesForMonth(
+                yearMonth = yearMonth,
+                startDate = startDate,
+                endDate = endDate
+            ).map { budgetWithCategoryRelationList ->
                 budgetWithCategoryRelationList.map { budgetWithCategoryRelation ->
                     budgetWithCategoryRelation.toDomain()
                 }

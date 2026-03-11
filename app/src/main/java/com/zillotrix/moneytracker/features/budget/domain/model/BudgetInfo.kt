@@ -7,4 +7,5 @@ data class BudgetInfo(
     val categoryId: Long,
     val categoryName: String,
     val monthYear: Int,
+    val totalAmtSpent: Long,
 )
