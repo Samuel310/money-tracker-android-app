@@ -1,4 +1,4 @@
-package com.zillotrix.moneytracker.core.db.entity
+package com.zillotrix.moneytracker.features.expenses.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

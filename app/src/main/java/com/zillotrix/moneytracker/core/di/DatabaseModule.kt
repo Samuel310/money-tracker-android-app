@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.zillotrix.moneytracker.core.db.AppDatabase
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
-import com.zillotrix.moneytracker.core.db.dao.ExpenseDao
+import com.zillotrix.moneytracker.features.expenses.data.local.dao.ExpenseDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
 import dagger.Module
 import dagger.Provides

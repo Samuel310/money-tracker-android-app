@@ -6,6 +6,7 @@ data class BudgetInfo(
     val amount: Long,
     val categoryId: Long,
     val categoryName: String,
-    val monthYear: Int,
+    val yearMonth: Int,
     val totalAmtSpent: Long,
 )
+

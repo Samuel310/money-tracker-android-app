@@ -7,6 +7,7 @@ import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryD
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetCategoryEntity
+import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryAndExpensesRelation
 import com.zillotrix.moneytracker.features.budget.data.mapper.toDomain
 import com.zillotrix.moneytracker.features.budget.data.mapper.toEntity
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget
@@ -17,6 +18,7 @@ import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetReposi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.collections.map
 
 class BudgetRepositoryImpl @Inject constructor(
     private val budgetDao: BudgetDao,
@@ -32,7 +34,7 @@ class BudgetRepositoryImpl @Inject constructor(
             if(budgetInfo.amount < 0){
                 return RepoResult.Error("Budget amt. cannot be smaller that 0")
             }
-            if(budgetInfo.monthYear <= 0){
+            if(budgetInfo.yearMonth <= 0){
                 return RepoResult.Error("Select a valid month")
             }
             if(budgetInfo.categoryId < 0){
@@ -54,7 +56,7 @@ class BudgetRepositoryImpl @Inject constructor(
                 name = budgetInfo.name,
                 amount = budgetInfo.amount,
                 categoryId = categoryId,
-                monthYear = budgetInfo.monthYear,
+                yearMonth = budgetInfo.yearMonth,
             )
             budgetDao.insertBudget(budget.toEntity())
             return RepoResult.Success(true)
@@ -65,7 +67,25 @@ class BudgetRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
+    override fun getBudgetInfoById(
+        budgetId: Long,
+        startDate: Long,
+        endDate: Long
+    ): RepoResult<Flow<BudgetInfo?>, String> {
+        try {
+            val res = budgetDao.getBudgetWithCategoryAndExpensesById(
+               budgetId = budgetId,
+               startDate = startDate,
+               endDate = endDate
+            ).map { value -> value?.toDomain() }
+            return RepoResult.Success(res)
+        }catch (e : Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to load budget info")
+        }
+    }
+
+    override fun getAllBudgetInfoByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
         try {
             val (startDate, endDate) = yearMonth.toYearMonth().getMonthRange()
             val res = budgetDao.getBudgetsWithCategoryAndExpensesForMonth(
@@ -75,6 +95,22 @@ class BudgetRepositoryImpl @Inject constructor(
             ).map { budgetWithCategoryRelationList ->
                 budgetWithCategoryRelationList.map { budgetWithCategoryRelation ->
                     budgetWithCategoryRelation.toDomain()
+                }
+            }
+            return RepoResult.Success(res)
+        }catch (e: Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to load budget info")
+        }
+    }
+
+    override fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<Budget>>, String> {
+        try {
+            val res = budgetDao.getBudgetsForMonth(
+                yearMonth = yearMonth,
+            ).map { budgetEntityList ->
+                budgetEntityList.map { budgetEntity ->
+                    budgetEntity.toDomain()
                 }
             }
             return RepoResult.Success(res)
@@ -112,7 +148,7 @@ class BudgetRepositoryImpl @Inject constructor(
         incomeDao.insertIncome(income.toEntity())
     }
 
-    override fun getMonthlyTotalIncome(monthYear: Int): Flow<Long> {
+    override fun getMonthlyTotalIncome(yearMonth: Int): Flow<Long> {
         TODO("Not yet implemented")
     }
 }

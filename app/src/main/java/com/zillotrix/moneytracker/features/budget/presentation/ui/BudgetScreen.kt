@@ -44,7 +44,7 @@ import com.zillotrix.moneytracker.features.budget.presentation.view_model.Budget
 import kotlinx.coroutines.launch
 
 @Composable
-fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<BudgetScreenViewModel>()){
+fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit, budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<BudgetScreenViewModel>()){
 
     val context = LocalContext.current
     val state by budgetScreenViewModel.state.collectAsState()
@@ -79,6 +79,7 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, budgetScreenViewModel:
             }
         }
     ) { innerPadding ->
+        //TODO: show loader
         Column(
             modifier = Modifier.fillMaxWidth()
                 .fillMaxHeight()
@@ -159,7 +160,7 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, budgetScreenViewModel:
                 for(categoryName in state.budgetInfoMap.keys){
                     Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
                     state.budgetInfoMap[categoryName]?.forEach { budgetInfo ->
-                        BudgetItem(budgetInfo)
+                        BudgetItem(budgetInfo, onNavigateExpenseScreen)
                     }
                 }
             }
@@ -176,7 +177,7 @@ fun PreviewBudgetScreen(){
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            BudgetScreen(onNavigateToNewBudgetScreen = {})
+            BudgetScreen(onNavigateToNewBudgetScreen = {}, onNavigateExpenseScreen = {_,_->})
         }
     }
 }

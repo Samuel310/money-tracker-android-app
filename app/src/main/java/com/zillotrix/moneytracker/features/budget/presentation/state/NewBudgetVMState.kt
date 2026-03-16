@@ -7,7 +7,7 @@ import java.time.YearMonth
 data class NewBudgetVMState(
     val name: String = "",
     val amt : String = "",
-    val monthYear : Int = YearMonth.now().toIntYYYYMM(),
+    val yearMonth : Int = YearMonth.now().toIntYYYYMM(),
     val selectedBudgetCategory: BudgetCategory? = null,
     val budgetCategories: List<BudgetCategory> = emptyList(),
     val isLoading : Boolean = false,

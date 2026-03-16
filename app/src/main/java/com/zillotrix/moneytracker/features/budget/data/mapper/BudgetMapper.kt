@@ -9,7 +9,7 @@ fun BudgetEntity.toDomain(): Budget {
         name = this.name,
         amount = this.amount,
         categoryId = this.categoryId,
-        monthYear = this.monthYear
+        yearMonth = this.yearMonth
     )
 }
 
@@ -19,6 +19,6 @@ fun Budget.toEntity(): BudgetEntity {
         name = this.name,
         amount = this.amount,
         categoryId = this.categoryId,
-        monthYear = this.monthYear
+        yearMonth = this.yearMonth
     )
 }

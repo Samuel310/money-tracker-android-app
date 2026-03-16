@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
-import com.zillotrix.moneytracker.core.db.dao.ExpenseDao
+import com.zillotrix.moneytracker.features.expenses.data.local.dao.ExpenseDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetCategoryEntity
-import com.zillotrix.moneytracker.core.db.entity.ExpenseEntity
+import com.zillotrix.moneytracker.features.expenses.data.local.entity.ExpenseEntity
 import com.zillotrix.moneytracker.features.budget.data.local.entity.IncomeEntity
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
 

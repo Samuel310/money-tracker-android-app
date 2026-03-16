@@ -11,7 +11,7 @@ fun BudgetWithCategoryAndExpensesRelation.toDomain(): BudgetInfo {
         name = this.budget.name,
         amount = this.budget.amount,
         categoryId = this.budget.categoryId,
-        monthYear = this.budget.monthYear,
+        yearMonth = this.budget.yearMonth,
         categoryName = this.category.name,
         totalAmtSpent = this.totalAmtSpent,
     )
@@ -24,7 +24,7 @@ fun BudgetInfo.toEntity(): BudgetWithCategoryAndExpensesRelation {
             name = this.name,
             amount = this.amount,
             categoryId = this.categoryId,
-            monthYear = this.monthYear,
+            yearMonth = this.yearMonth,
         ),
         category = BudgetCategoryEntity(
             id = this.categoryId,

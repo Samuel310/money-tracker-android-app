@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b5b811b756f1530e5153968e9192ef25",
+    "identityHash": "660d341c25812984adbd47f7addbe534",
     "entities": [
       {
         "tableName": "income",
@@ -60,7 +60,7 @@
       },
       {
         "tableName": "budget",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` INTEGER NOT NULL, `categoryId` INTEGER NOT NULL, `monthYear` INTEGER NOT NULL, FOREIGN KEY(`categoryId`) REFERENCES `budget_category`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` INTEGER NOT NULL, `categoryId` INTEGER NOT NULL, `yearMonth` INTEGER NOT NULL, FOREIGN KEY(`categoryId`) REFERENCES `budget_category`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -87,8 +87,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "monthYear",
-            "columnName": "monthYear",
+            "fieldPath": "yearMonth",
+            "columnName": "yearMonth",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -110,13 +110,13 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_budget_categoryId` ON `${TABLE_NAME}` (`categoryId`)"
           },
           {
-            "name": "index_budget_monthYear",
+            "name": "index_budget_yearMonth",
             "unique": false,
             "columnNames": [
-              "monthYear"
+              "yearMonth"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_budget_monthYear` ON `${TABLE_NAME}` (`monthYear`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_budget_yearMonth` ON `${TABLE_NAME}` (`yearMonth`)"
           }
         ],
         "foreignKeys": [
@@ -211,7 +211,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b5b811b756f1530e5153968e9192ef25')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '660d341c25812984adbd47f7addbe534')"
     ]
   }
 }

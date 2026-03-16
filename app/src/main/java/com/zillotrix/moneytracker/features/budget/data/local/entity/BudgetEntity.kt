@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index("categoryId"),
-        Index("monthYear")
+        Index("yearMonth")
     ]
 )
 data class BudgetEntity(
@@ -26,5 +26,5 @@ data class BudgetEntity(
     val name: String,
     val amount: Long,
     val categoryId: Long,
-    val monthYear: Int,
+    val yearMonth: Int,
 )

@@ -16,10 +16,10 @@ interface BudgetDao {
 
     @Query("""
         SELECT * FROM budget
-        WHERE monthYear = :monthYear
+        WHERE yearMonth = :yearMonth
         ORDER BY name ASC
     """)
-    fun getBudgetsForMonth(monthYear: Int): Flow<List<BudgetEntity>>
+    fun getBudgetsForMonth(yearMonth: Int): Flow<List<BudgetEntity>>
 
     @Transaction
     @Query("""
@@ -30,7 +30,7 @@ interface BudgetDao {
         LEFT JOIN expense ON budget.id = expense.budgetId 
             AND expense.date >= :startDate 
             AND expense.date <= :endDate
-        WHERE budget.monthYear = :yearMonth
+        WHERE budget.yearMonth = :yearMonth
         GROUP BY budget.id
         ORDER BY budget.name ASC
     """)
@@ -45,6 +45,24 @@ interface BudgetDao {
         WHERE id = :budgetId
     """)
     suspend fun getBudgetById(budgetId: Long): BudgetEntity?
+
+    @Transaction
+    @Query("""
+        SELECT 
+        budget.*, 
+        SUM(COALESCE(expense.amount, 0)) as totalAmtSpent 
+        FROM budget
+        LEFT JOIN expense ON budget.id = expense.budgetId 
+            AND expense.date >= :startDate 
+            AND expense.date <= :endDate
+        WHERE budget.id = :budgetId
+        GROUP BY budget.id
+    """)
+    fun getBudgetWithCategoryAndExpensesById(
+        budgetId: Long,
+        startDate: Long,
+        endDate: Long
+    ) : Flow<BudgetWithCategoryAndExpensesRelation?>
 
     @Query("DELETE FROM budget WHERE id = :budgetId")
     suspend fun deleteBudget(budgetId: Long)

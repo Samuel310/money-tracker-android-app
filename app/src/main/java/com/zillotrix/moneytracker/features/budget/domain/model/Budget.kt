@@ -5,5 +5,5 @@ data class Budget(
     val name: String,
     val amount: Long,
     val categoryId: Long,
-    val monthYear: Int,
+    val yearMonth: Int,
 )

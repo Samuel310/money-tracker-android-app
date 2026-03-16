@@ -35,7 +35,7 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
     private fun observeAllBudgetInfo(){
         _observeJob?.cancel()
         _observeJob = viewModelScope.launch {
-            when(val res = budgetRepository.getAllBudgetByMonth(_state.value.currentYearMonth.toIntYYYYMM())){
+            when(val res = budgetRepository.getAllBudgetInfoByMonth(_state.value.currentYearMonth.toIntYYYYMM())){
                 is RepoResult.Success -> {
                     res.data.collect { budgetInfoList ->
                         val budgetInfoMap = mutableMapOf<String, List<BudgetInfo>>()

@@ -1,5 +1,6 @@
 package com.zillotrix.moneytracker.features.budget.presentation.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,9 +27,8 @@ import com.zillotrix.moneytracker.core.ui.theme.MoneyTrackerTheme
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 
 @Composable
-fun BudgetItem(budgetInfo: BudgetInfo){
+fun BudgetItem(budgetInfo: BudgetInfo, onNavigateExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit){
 
-    // Calculate progress (clamped between 0 and 1)
     val progress = if (budgetInfo.amount > 0L) {
         (budgetInfo.totalAmtSpent / budgetInfo.amount.toFloat()).coerceIn(0f, 1f)
     } else 0f
@@ -39,7 +39,8 @@ fun BudgetItem(budgetInfo: BudgetInfo){
     Column(
         modifier = Modifier
             .height(60.dp)
-            .padding(start = 8.dp, end = 8.dp),
+            .padding(start = 8.dp, end = 8.dp)
+            .clickable(onClick = {onNavigateExpenseScreen(budgetInfo.id, budgetInfo.yearMonth)}),
         verticalArrangement = Arrangement.Center
     ) {
         Row(
@@ -75,7 +76,7 @@ fun BudgetItem(budgetInfo: BudgetInfo){
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp),
-            strokeCap = StrokeCap.Round, // Makes the ends rounded
+            strokeCap = StrokeCap.Round,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
             color = if (progress >= 1f) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
         )
@@ -92,24 +93,27 @@ fun PreviewBudgetItem(){
                 .systemBarsPadding()
         ) {
             Column {
-                BudgetItem(BudgetInfo(
-                    id = 1,
-                    name = "Stock",
-                    amount = 500,
-                    categoryId = 1,
-                    categoryName = "qwerty",
-                    monthYear = 202603,
-                    totalAmtSpent = 300
-                ))
+                BudgetItem(
+                    BudgetInfo(
+                        id = 1,
+                        name = "Stock",
+                        amount = 500,
+                        categoryId = 1,
+                        categoryName = "qwerty",
+                        yearMonth = 202603,
+                        totalAmtSpent = 300,
+                        ),
+                    onNavigateExpenseScreen = {_,_ ->},
+                )
                 BudgetItem(BudgetInfo(
                     id = 1,
                     name = "Stock",
                     amount = 600,
                     categoryId = 1,
                     categoryName = "qwerty",
-                    monthYear = 202603,
+                    yearMonth = 202603,
                     totalAmtSpent = 200,
-                ))
+                ), onNavigateExpenseScreen = {_,_ ->})
             }
         }
     }

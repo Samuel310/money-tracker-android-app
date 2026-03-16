@@ -65,8 +65,8 @@ class NewBudgetViewModel @Inject constructor(private val budgetRepository: Budge
         _state.value = _state.value.copy(amt = amt)
     }
 
-    fun onMontYearChanged(monthYear: YearMonth){
-        _state.value = _state.value.copy(monthYear = monthYear.toIntYYYYMM())
+    fun onMontYearChanged(yearMonth: YearMonth){
+        _state.value = _state.value.copy(yearMonth = yearMonth.toIntYYYYMM())
     }
 
     fun showMonthPickerDialog(show: Boolean){
@@ -82,7 +82,7 @@ class NewBudgetViewModel @Inject constructor(private val budgetRepository: Budge
                     name = _state.value.name,
                     amount = if (_state.value.amt.isEmpty()) 0L else _state.value.amt.toLong(),
                     categoryId = _state.value.selectedBudgetCategory?.id ?: 0L,
-                    monthYear = _state.value.monthYear,
+                    yearMonth = _state.value.yearMonth,
                     categoryName = _state.value.selectedBudgetCategory?.name ?: "",
                     totalAmtSpent = 0L
                 )
