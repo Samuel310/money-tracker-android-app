@@ -3,8 +3,7 @@ package com.zillotrix.moneytracker.features.expenses.presentation.ui
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -28,12 +25,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zillotrix.moneytracker.core.utils.toShortMonthYear
+import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.ExpenseItem
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetInfoCard
 import com.zillotrix.moneytracker.features.expenses.presentation.view_model.ExpenseScreenViewModel
 import kotlinx.coroutines.launch
 
@@ -55,19 +53,10 @@ fun ExpenseScreen(
         }
     }
 
-    val plannedAmt = state.budgetInfo?.amount ?: 0L
-    val totalAmtSpent = state.budgetInfo?.totalAmtSpent ?: 0L
-    val remainingAmount = plannedAmt - totalAmtSpent
-    val progress = if (plannedAmt > 0L) {
-        (totalAmtSpent / plannedAmt.toFloat()).coerceIn(0f, 1f)
-    } else 0f
-
-
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${state.budgetInfo?.name} Expenses") },
+                title = { Text("${state.budgetInfo?.name} — ${state.budgetInfo?.yearMonth?.toYearMonth()?.toShortMonthYear()}") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
@@ -93,34 +82,20 @@ fun ExpenseScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
-            //TODO: show loader
-            Text(
-                text = "Planned Budget ₹${plannedAmt}",
+            BudgetInfoCard(
+                budgetInfo = state.budgetInfo,
+                onNavigateExpenseScreen = { _, _ -> },
+                clickable = false,
+                shadowElevation = 4.dp
             )
-            Text(
-                text = "Total Spent ₹${totalAmtSpent}",
-            )
-            Text(
-                text = "Available ₹${remainingAmount}",
-            )
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp),
-                strokeCap = StrokeCap.Round,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                color = if (progress >= 1f) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
-            )
-
+            Spacer(modifier = Modifier.height(8.dp))
             if(state.expenseList.isNotEmpty()){
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(
@@ -133,6 +108,7 @@ fun ExpenseScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
             //TODO: show empty list view.
         }
     }

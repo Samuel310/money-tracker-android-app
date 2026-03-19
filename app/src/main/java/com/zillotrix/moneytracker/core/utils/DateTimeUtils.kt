@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -59,4 +60,9 @@ fun Date.toDayMonthYearFull(): String {
     val monthYear = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(this)
 
     return "$dayName, $day$suffix $monthYear"
+}
+
+fun YearMonth.toShortMonthYear(): String {
+    val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
+    return this.format(formatter)
 }
