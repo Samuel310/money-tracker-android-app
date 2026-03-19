@@ -8,4 +8,5 @@ data class BudgetScreenState(
     val currentYearMonth: YearMonth = YearMonth.now(),
     val isLoading: Boolean = false,
     val showMonthPickerDialog: Boolean = false,
+    val isFabExpanded: Boolean = false,
 )

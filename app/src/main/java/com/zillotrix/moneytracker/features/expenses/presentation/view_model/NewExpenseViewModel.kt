@@ -72,20 +72,29 @@ class NewExpenseViewModel @Inject constructor(
                 }
             }
 
-            val res = budgetRepository.getAllBudgetByMonth(yearMonth = _state.value.yearMonth)
-            when(res){
-                is RepoResult.Success -> {
-                    res.data.collect { budgetList ->
-                        val selectedBudget = if(initialBudgetId > 0L){
-                            budgetList.find { it.id == initialBudgetId } ?: budgetList.first()
-                        }else{
-                            budgetList.first()
+            if(initialBudgetId > 0L){
+                when(val res = budgetRepository.getBudgetById(initialBudgetId)){
+                    is RepoResult.Success -> {
+                        res.data?.let { budget ->
+                            _state.value = _state.value.copy(selectedBudget = budget)
                         }
-                        _state.value = _state.value.copy(budgetList = budgetList, selectedBudget = selectedBudget)
+                    }
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
                     }
                 }
-                is RepoResult.Error -> {
-                    _onError.emit(res.error)
+            }else{
+                val res = budgetRepository.getAllBudgetByMonth(yearMonth = _state.value.yearMonth)
+                when(res){
+                    is RepoResult.Success -> {
+                        res.data.collect { budgetList ->
+                            val selectedBudget = budgetList.first()
+                            _state.value = _state.value.copy(budgetList = budgetList, selectedBudget = selectedBudget)
+                        }
+                    }
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
+                    }
                 }
             }
         }

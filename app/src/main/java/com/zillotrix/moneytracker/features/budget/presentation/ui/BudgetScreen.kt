@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -32,11 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.zillotrix.moneytracker.core.navigation.LocalNavActions
+import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.core.utils.toMonthName
 import com.zillotrix.moneytracker.core.utils.toYearString
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthPickerDialog
 import com.zillotrix.moneytracker.features.budget.presentation.view_model.BudgetScreenViewModel
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetInfoCard
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.ExpandableFab
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,14 +68,24 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navActions.navigateToNewBudgetScreen()
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add New Budget"
-                )
-            }
+            ExpandableFab(
+                isExpanded = state.isFabExpanded,
+                onMainFabClick = {
+                    budgetScreenViewModel.toggleFab(!state.isFabExpanded)
+                },
+                onAddBudgetClick = {
+                    budgetScreenViewModel.toggleFab(false)
+                    navActions.navigateToNewBudgetScreen()
+                },
+                onAddExpenseClick = {
+                    if(state.budgetInfoMap.isEmpty()){
+                        Toast.makeText(context, "Please create a budget first before adding an expense.", Toast.LENGTH_SHORT).show()
+                        return@ExpandableFab
+                    }
+                    budgetScreenViewModel.toggleFab(false)
+                    navActions.navigateToNewExpenseScreen(budgetId = 0L, yearMonth = state.currentYearMonth.toIntYYYYMM(), expenseId = null)
+                }
+            )
         }
     ) { innerPadding ->
         //TODO: show loader

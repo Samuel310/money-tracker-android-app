@@ -84,6 +84,20 @@ class BudgetRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getBudgetById(budgetId: Long): RepoResult<Budget?, String> {
+        try {
+            val res = budgetDao.getBudgetById(budgetId = budgetId)
+            return if(res == null){
+                RepoResult.Error("Budget not found")
+            }else{
+                RepoResult.Success(res.toDomain())
+            }
+        }catch (e : Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to load budget")
+        }
+    }
+
     override fun getAllBudgetInfoByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
         try {
             val (startDate, endDate) = yearMonth.toYearMonth().getMonthRange()

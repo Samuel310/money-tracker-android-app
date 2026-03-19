@@ -66,4 +66,8 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
     fun showMonthPickerDialog(show: Boolean){
         _state.value = _state.value.copy(showMonthPickerDialog = show)
     }
+
+    fun toggleFab(value: Boolean){
+        _state.value = _state.value.copy(isFabExpanded = value)
+    }
 }
