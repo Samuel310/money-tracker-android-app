@@ -62,7 +62,13 @@ class ExpenseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteExpense(expenseId: Long) {
-        TODO("Not yet implemented")
+    override suspend fun deleteExpense(expenseId: Long) : RepoResult<Unit, String> {
+        try {
+            expenseDao.deleteExpense(expenseId)
+            return RepoResult.Success(Unit)
+        }catch (e: Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to delete Expense data")
+        }
     }
 }

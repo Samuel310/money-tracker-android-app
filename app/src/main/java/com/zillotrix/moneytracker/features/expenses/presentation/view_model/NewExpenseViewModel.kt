@@ -134,4 +134,19 @@ class NewExpenseViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = false)
         }
     }
+
+    fun deleteExpense(){
+        viewModelScope.launch{
+            if(_state.value.expenseId > 0L && _state.value.editMode){
+                when(val res = expenseRepository.deleteExpense(_state.value.expenseId)){
+                    is RepoResult.Success -> {
+                        _onSuccess.emit(false)
+                    }
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
+                    }
+                }
+            }
+        }
+    }
 }

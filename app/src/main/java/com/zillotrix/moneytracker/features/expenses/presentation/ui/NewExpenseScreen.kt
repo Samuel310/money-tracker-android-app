@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +55,9 @@ fun NewExpenseScreen(newExpenseViewModel: NewExpenseViewModel = hiltViewModel<Ne
                 if(isSuccess){
                     val msg = if (state.editMode) "Updated" else "Added"
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context, "Expense removed", Toast.LENGTH_SHORT).show()
+                    navActions.navigateBack()
                 }
             }
         }
@@ -82,6 +86,16 @@ fun NewExpenseScreen(newExpenseViewModel: NewExpenseViewModel = hiltViewModel<Ne
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
+                    }
+                },
+                actions = {
+                    if(state.editMode){
+                        IconButton(onClick = { newExpenseViewModel.deleteExpense() }) {
+                            Icon(
+                                imageVector = Icons.Default.DeleteForever,
+                                contentDescription = "Delete Expense"
+                            )
+                        }
                     }
                 }
             )

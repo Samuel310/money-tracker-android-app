@@ -9,5 +9,5 @@ interface ExpenseRepository {
     suspend fun setExpense(expense: Expense) : RepoResult<Boolean, String>
     fun getExpensesForBudgetPerMonth(budgetId: Long, yearMonth: YearMonth) : RepoResult<Flow<List<Expense>>, String>
     suspend fun getExpenseById(expenseId: Long) : RepoResult<Expense?, String>
-    suspend fun deleteExpense(expenseId: Long)
+    suspend fun deleteExpense(expenseId: Long) : RepoResult<Unit, String>
 }
