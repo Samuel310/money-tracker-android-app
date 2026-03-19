@@ -14,6 +14,12 @@ interface ExpenseDao {
 
     @Query("""
         SELECT * FROM expense
+        WHERE id = :expenseId
+    """)
+    suspend fun getExpenseById(expenseId: Long): ExpenseEntity?
+
+    @Query("""
+        SELECT * FROM expense
         WHERE budgetId = :budgetId
         ORDER BY date DESC
     """)

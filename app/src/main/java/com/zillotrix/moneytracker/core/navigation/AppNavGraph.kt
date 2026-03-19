@@ -14,51 +14,25 @@ import com.zillotrix.moneytracker.features.expenses.presentation.ui.NewExpenseSc
 @Composable
 fun AppNavGraph(navController: NavHostController) {
     NavHost(navController, startDestination = Screen.BaseScreen.route) {
-        composable(Screen.BaseScreen.route) {
-            BaseScreen(
-                onNavigateToNewBudgetScreen = {
-                    navController.navigate(Screen.NewBudgetScreen.route)
-                },
-                onNavigateExpenseScreen = {budgetId, yearMonth ->
-                    navController.navigate(Screen.ExpenseScreen.route + "/$budgetId/$yearMonth")
-                }
-            )
-        }
-        composable(Screen.NewBudgetScreen.route) {
-            NewBudgetScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
+        composable(Screen.BaseScreen.route) { BaseScreen() }
+        composable(Screen.NewBudgetScreen.route) { NewBudgetScreen() }
         composable(
             Screen.ExpenseScreen.route + "/{budgetId}/{yearMonth}",
             arguments = listOf(
                 navArgument("budgetId") { type = NavType.LongType },
                 navArgument("yearMonth") { type = NavType.IntType },
             )
-        ) {
-            ExpenseScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                },
-                onNavigateToNewExpenseScreen = {budgetId, yearMonth ->
-                    navController.navigate(Screen.NewExpenseScreen.route + "/$budgetId/$yearMonth")
-                }
-            )
-        }
+        ) { ExpenseScreen() }
         composable(
-            Screen.NewExpenseScreen.route + "/{budgetId}/{yearMonth}",
+            Screen.NewExpenseScreen.route + "/{budgetId}/{yearMonth}?expenseId={expenseId}",
             arguments = listOf(
                 navArgument("budgetId") { type = NavType.LongType },
                 navArgument("yearMonth") { type = NavType.IntType },
+                navArgument("expenseId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             )
-        ) {
-            NewExpenseScreen(
-                navigateBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
+        ) { NewExpenseScreen() }
     }
 }

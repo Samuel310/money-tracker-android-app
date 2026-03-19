@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toMonthName
 import com.zillotrix.moneytracker.core.utils.toYearString
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthPickerDialog
@@ -40,9 +40,10 @@ import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetI
 import kotlinx.coroutines.launch
 
 @Composable
-fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit, budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<BudgetScreenViewModel>()){
+fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<BudgetScreenViewModel>()){
 
     val context = LocalContext.current
+    val navActions = LocalNavActions.current
     val state by budgetScreenViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -67,7 +68,9 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToNewBudgetScreen) {
+            FloatingActionButton(onClick = {
+                navActions.navigateToNewBudgetScreen()
+            }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add New Budget"
@@ -77,12 +80,15 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
     ) { innerPadding ->
         //TODO: show loader
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(innerPadding)
         ) {
             Row(
-                modifier = Modifier.height(45.dp).padding(start = 8.dp, end = 8.dp),
+                modifier = Modifier
+                    .height(45.dp)
+                    .padding(start = 8.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = {
@@ -94,9 +100,11 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
                     )
                 }
                 Column(
-                    modifier = Modifier.weight(1f).clickable(onClick = {
-                        budgetScreenViewModel.showMonthPickerDialog(show = true)
-                    }),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = {
+                            budgetScreenViewModel.showMonthPickerDialog(show = true)
+                        }),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
@@ -123,7 +131,9 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.height(45.dp).padding(start = 8.dp, end = 8.dp),
+                modifier = Modifier
+                    .height(45.dp)
+                    .padding(start = 8.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -147,7 +157,9 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(start = 8.dp, end = 8.dp).weight(1f)
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp)
+                        .weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -156,7 +168,7 @@ fun BudgetScreen(onNavigateToNewBudgetScreen: () -> Unit, onNavigateExpenseScree
                 for(categoryName in state.budgetInfoMap.keys){
                     Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
                     state.budgetInfoMap[categoryName]?.forEach { budgetInfo ->
-                        BudgetInfoCard(budgetInfo, onNavigateExpenseScreen)
+                        BudgetInfoCard(budgetInfo)
                     }
                 }
             }

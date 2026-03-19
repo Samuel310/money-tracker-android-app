@@ -51,4 +51,18 @@ class ExpenseRepositoryImpl @Inject constructor(
             return RepoResult.Error("Something went wrong, Unable to load budget info")
         }
     }
+
+    override suspend fun getExpenseById(expenseId: Long): RepoResult<Expense?, String> {
+        try {
+            val expenseEntity = expenseDao.getExpenseById(expenseId)
+            return RepoResult.Success(expenseEntity?.toDomain())
+        }catch (e: Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to get Expense data")
+        }
+    }
+
+    override suspend fun deleteExpense(expenseId: Long) {
+        TODO("Not yet implemented")
+    }
 }

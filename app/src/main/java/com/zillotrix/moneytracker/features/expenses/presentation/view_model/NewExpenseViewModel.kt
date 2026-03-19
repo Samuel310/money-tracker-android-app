@@ -25,11 +25,11 @@ import javax.inject.Inject
 class NewExpenseViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository,
     private val budgetRepository: BudgetRepository,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val initialYearMonth = savedStateHandle.get<Int>("yearMonth") ?: YearMonth.now().toIntYYYYMM()
-    private val initialBudgetId = savedStateHandle.get<Long>("budgetId") ?: 0L
+
     private val _state = MutableStateFlow(NewExpenseVMState().copy(yearMonth = initialYearMonth))
     val state: StateFlow<NewExpenseVMState> = _state
 
@@ -45,6 +45,33 @@ class NewExpenseViewModel @Inject constructor(
 
     private fun observeAllBudget(){
         viewModelScope.launch {
+            val expenseId = savedStateHandle.get<Long>("expenseId") ?: 0L
+            val initialBudgetId = savedStateHandle.get<Long>("budgetId") ?: 0L
+
+            if(expenseId > 0L){
+                _state.value = _state.value.copy(isLoading = true)
+                when(val res = expenseRepository.getExpenseById(expenseId)){
+                    is RepoResult.Success -> {
+                        if(res.data == null || res.data.budgetId != initialBudgetId){
+                            _onError.emit("Invalid Budget found")
+                            return@launch
+                        }
+                        _state.value = _state.value.copy(
+                            name = res.data.name,
+                            amt = res.data.amount.toString(),
+                            date = res.data.date,
+                            editMode = true,
+                            expenseId = res.data.id,
+                            isLoading = false
+                        )
+                    }
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
+                        _state.value = _state.value.copy(isLoading = false)
+                    }
+                }
+            }
+
             val res = budgetRepository.getAllBudgetByMonth(yearMonth = _state.value.yearMonth)
             when(res){
                 is RepoResult.Success -> {
@@ -89,7 +116,7 @@ class NewExpenseViewModel @Inject constructor(
             _state.value = _state.value.copy(isLoading = true)
             val res = expenseRepository.setExpense(
                 expense = Expense(
-                    id = 0L,
+                    id = _state.value.expenseId,
                     name = _state.value.name,
                     amount = if (_state.value.amt.isEmpty()) 0L else _state.value.amt.toLong(),
                     budgetId = _state.value.selectedBudget?.id ?: 0L,
@@ -98,13 +125,13 @@ class NewExpenseViewModel @Inject constructor(
             )
             when(res){
                 is RepoResult.Success -> {
-                    _state.value = _state.value.copy(isLoading = false)
                     _onSuccess.emit(true)
                 }
                 is RepoResult.Error -> {
                     _onError.emit(res.error)
                 }
             }
+            _state.value = _state.value.copy(isLoading = false)
         }
     }
 }

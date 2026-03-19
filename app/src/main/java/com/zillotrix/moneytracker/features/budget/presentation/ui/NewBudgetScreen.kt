@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.ui.theme.MoneyTrackerTheme
 import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.CategoryDropdownField
@@ -43,9 +44,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewBudgetScreen(navigateBack: () -> Unit, newBudgetViewModel: NewBudgetViewModel = hiltViewModel<NewBudgetViewModel>()) {
+fun NewBudgetScreen(newBudgetViewModel: NewBudgetViewModel = hiltViewModel<NewBudgetViewModel>()) {
 
     val context = LocalContext.current
+    val navActions = LocalNavActions.current
     val focusManager = LocalFocusManager.current
     val state by newBudgetViewModel.state.collectAsState()
 
@@ -58,7 +60,7 @@ fun NewBudgetScreen(navigateBack: () -> Unit, newBudgetViewModel: NewBudgetViewM
         launch {
             newBudgetViewModel.onSuccess.collect { isSuccess ->
                 if(isSuccess){
-                    navigateBack()
+                    navActions.navigateBack()
                 }
             }
         }
@@ -82,7 +84,7 @@ fun NewBudgetScreen(navigateBack: () -> Unit, newBudgetViewModel: NewBudgetViewM
             TopAppBar(
                 title = { Text("Add Budget") },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = {navActions.navigateBack()}) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -173,7 +175,7 @@ fun PreviewNewBudgetScreen(){
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            NewBudgetScreen(navigateBack = {})
+            NewBudgetScreen()
         }
     }
 }

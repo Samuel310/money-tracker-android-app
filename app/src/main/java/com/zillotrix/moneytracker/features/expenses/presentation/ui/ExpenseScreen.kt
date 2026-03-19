@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toShortMonthYear
 import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.ExpenseItem
@@ -38,11 +39,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseScreen(
-    navigateBack: () -> Unit,
-    onNavigateToNewExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit,
     expenseScreenViewModel: ExpenseScreenViewModel = hiltViewModel<ExpenseScreenViewModel>()
 ){
     val context = LocalContext.current
+    val navActions = LocalNavActions.current
     val state by expenseScreenViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -58,7 +58,7 @@ fun ExpenseScreen(
             TopAppBar(
                 title = { Text("${state.budgetInfo?.name} — ${state.budgetInfo?.yearMonth?.toYearMonth()?.toShortMonthYear()}") },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = { navActions.navigateBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -69,7 +69,11 @@ fun ExpenseScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                onNavigateToNewExpenseScreen(state.budgetId, state.yearMonth)
+                navActions.navigateToNewExpenseScreen(
+                    budgetId = state.budgetId,
+                    yearMonth = state.yearMonth,
+                    expenseId = null,
+                )
             }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -86,7 +90,6 @@ fun ExpenseScreen(
         ) {
             BudgetInfoCard(
                 budgetInfo = state.budgetInfo,
-                onNavigateExpenseScreen = { _, _ -> },
                 clickable = false,
                 shadowElevation = 4.dp
             )
@@ -103,7 +106,11 @@ fun ExpenseScreen(
                         key = { it.id }
                     ) { expense ->
                         ExpenseItem(expense = expense, onNavigateToNewExpenseScreen = {
-                            //TODO: handle navigation for update expense here.
+                            navActions.navigateToNewExpenseScreen(
+                                budgetId = state.budgetId,
+                                yearMonth = state.yearMonth,
+                                expenseId = expense.id,
+                            )
                         })
                     }
                 }

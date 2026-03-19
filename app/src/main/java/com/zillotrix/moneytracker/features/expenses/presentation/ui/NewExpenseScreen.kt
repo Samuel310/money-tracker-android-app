@@ -24,10 +24,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toDayMonthYearFull
 import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.BudgetDropDownField
@@ -38,9 +38,9 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewExpenseScreen(navigateBack: () -> Unit, newExpenseViewModel: NewExpenseViewModel = hiltViewModel<NewExpenseViewModel>()){
+fun NewExpenseScreen(newExpenseViewModel: NewExpenseViewModel = hiltViewModel<NewExpenseViewModel>()){
     val context = LocalContext.current
-    val focusManager = LocalFocusManager.current
+    val navActions = LocalNavActions.current
     val state by newExpenseViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -52,7 +52,8 @@ fun NewExpenseScreen(navigateBack: () -> Unit, newExpenseViewModel: NewExpenseVi
         launch {
             newExpenseViewModel.onSuccess.collect { isSuccess ->
                 if(isSuccess){
-                    Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
+                    val msg = if (state.editMode) "Updated" else "Added"
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -74,9 +75,9 @@ fun NewExpenseScreen(navigateBack: () -> Unit, newExpenseViewModel: NewExpenseVi
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Expense") },
+                title = { Text(if(state.editMode) "Update Expense" else "Add Expense") },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = { navActions.navigateBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"

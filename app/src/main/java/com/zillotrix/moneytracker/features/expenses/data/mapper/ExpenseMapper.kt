@@ -9,7 +9,7 @@ fun ExpenseEntity.toDomain(): Expense {
         id = this.id,
         name = this.name,
         amount = this.amount,
-        budgetId = this.amount,
+        budgetId = this.budgetId,
         date = Date(this.date),
     )
 }

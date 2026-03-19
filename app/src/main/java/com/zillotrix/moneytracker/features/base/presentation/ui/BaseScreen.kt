@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import com.zillotrix.moneytracker.features.budget.presentation.ui.BudgetScreen
 
 @Composable
-fun BaseScreen(onNavigateToNewBudgetScreen : () -> Unit, onNavigateExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit){
+fun BaseScreen(){
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
                 .fillMaxHeight()
                 .fillMaxWidth()
         ) {
-            BudgetScreen(onNavigateToNewBudgetScreen, onNavigateExpenseScreen)
+            BudgetScreen()
         }
     }
 }

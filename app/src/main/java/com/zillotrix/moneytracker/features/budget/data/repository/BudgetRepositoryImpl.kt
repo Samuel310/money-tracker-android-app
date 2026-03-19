@@ -7,7 +7,6 @@ import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryD
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetCategoryEntity
-import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryAndExpensesRelation
 import com.zillotrix.moneytracker.features.budget.data.mapper.toDomain
 import com.zillotrix.moneytracker.features.budget.data.mapper.toEntity
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget

@@ -14,4 +14,6 @@ data class NewExpenseVMState(
     val yearMonth: Int = YearMonth.now().toIntYYYYMM(),
     val isLoading : Boolean = false,
     val showDatePickerDialog: Boolean = false,
+    val editMode: Boolean = false,
+    val expenseId: Long = 0L,
 )

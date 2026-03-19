@@ -62,7 +62,7 @@ fun PreviewExpenseProgressBar(){
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            Column() {
+            Column {
                 ExpenseProgressBar(progress = 0.9f)
             }
         }

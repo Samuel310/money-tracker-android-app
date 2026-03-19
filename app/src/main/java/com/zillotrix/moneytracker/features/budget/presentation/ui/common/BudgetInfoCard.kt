@@ -17,16 +17,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.ExpenseProgressBar
 
 @Composable
 fun BudgetInfoCard(
     budgetInfo: BudgetInfo?,
-    onNavigateExpenseScreen: (budgetId: Long, yearMonth: Int) -> Unit,
     clickable : Boolean = true,
     shadowElevation: Dp = 0.dp
 ){
+
+    val navActions = LocalNavActions.current
 
     if(budgetInfo == null){
         return
@@ -47,7 +49,7 @@ fun BudgetInfoCard(
             .then(
                 if (clickable) {
                     Modifier.clickable {
-                        onNavigateExpenseScreen(budgetInfo.id, budgetInfo.yearMonth)
+                        navActions.navigateToExpenseScreen(budgetInfo.id, budgetInfo.yearMonth)
                     }
                 } else {
                     Modifier
