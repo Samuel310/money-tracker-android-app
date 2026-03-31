@@ -1,5 +1,6 @@
 package com.zillotrix.moneytracker.features.budget.presentation.view_model
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zillotrix.moneytracker.core.utils.RepoResult
@@ -19,9 +20,14 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class NewBudgetViewModel @Inject constructor(private val budgetRepository: BudgetRepository)  : ViewModel()  {
+class NewBudgetViewModel @Inject constructor(
+    private val budgetRepository: BudgetRepository,
+    savedStateHandle: SavedStateHandle
+)  : ViewModel()  {
 
-    private val _state = MutableStateFlow(NewBudgetVMState())
+    private val initialYearMonth = savedStateHandle.get<Int>("yearMonth") ?: YearMonth.now().toIntYYYYMM()
+
+    private val _state = MutableStateFlow(NewBudgetVMState(yearMonth = initialYearMonth))
     val state: StateFlow<NewBudgetVMState> = _state
 
     private val _onError = MutableSharedFlow<String>()

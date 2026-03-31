@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 class NavActions(private val navController: NavHostController) {
     fun navigateBack(){ navController.popBackStack() }
 
-    fun navigateToNewBudgetScreen(){
-        navController.navigate(Screen.NewBudgetScreen.route)
+    fun navigateToNewBudgetScreen(yearMonth : Int){
+        navController.navigate("${Screen.NewBudgetScreen.route}/$yearMonth")
     }
 
     fun navigateToExpenseScreen(budgetId : Long, yearMonth : Int){

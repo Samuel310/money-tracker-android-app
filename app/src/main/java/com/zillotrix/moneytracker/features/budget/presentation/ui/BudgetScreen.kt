@@ -80,7 +80,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                 },
                 onAddBudgetClick = {
                     budgetScreenViewModel.toggleFab(false)
-                    navActions.navigateToNewBudgetScreen()
+                    navActions.navigateToNewBudgetScreen(state.currentYearMonth.toIntYYYYMM())
                 },
                 onAddExpenseClick = {
                     if(state.budgetInfoMap.isEmpty()){

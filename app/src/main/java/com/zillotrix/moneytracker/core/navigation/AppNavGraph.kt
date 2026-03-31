@@ -15,7 +15,14 @@ import com.zillotrix.moneytracker.features.expenses.presentation.ui.NewExpenseSc
 fun AppNavGraph(navController: NavHostController) {
     NavHost(navController, startDestination = Screen.BaseScreen.route) {
         composable(Screen.BaseScreen.route) { BaseScreen() }
-        composable(Screen.NewBudgetScreen.route) { NewBudgetScreen() }
+        composable(
+            Screen.NewBudgetScreen.route + "/{yearMonth}",
+            arguments = listOf(
+                navArgument("yearMonth") { type = NavType.IntType },
+            )
+        ) {
+            NewBudgetScreen()
+        }
         composable(
             Screen.ExpenseScreen.route + "/{budgetId}/{yearMonth}",
             arguments = listOf(
