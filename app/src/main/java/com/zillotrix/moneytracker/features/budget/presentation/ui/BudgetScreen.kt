@@ -2,17 +2,22 @@ package com.zillotrix.moneytracker.features.budget.presentation.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -88,7 +93,6 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
             )
         }
     ) { innerPadding ->
-        //TODO: show loader
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -140,46 +144,73 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .height(45.dp)
-                    .padding(start = 8.dp, end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Income: ",
-                )
-                Text(
-                    text = "5000",
-                    modifier = Modifier.weight(1f),
-                )
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Income"
+            if(state.isLoading){
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }else{
+                Row(
+                    modifier = Modifier
+                        .height(45.dp)
+                        .padding(start = 8.dp, end = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Income: ",
+                    )
+                    Text(
+                        text = "5000",
+                        modifier = Modifier.weight(1f),
+                    )
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Income"
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    Text(
+                        "Budget",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp)
+                            .weight(1f)
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                Text(
-                    "Budget",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp)
-                        .weight(1f)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            if(state.budgetInfoMap.isNotEmpty()){
-                for(categoryName in state.budgetInfoMap.keys){
-                    Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
-                    state.budgetInfoMap[categoryName]?.forEach { budgetInfo ->
-                        BudgetInfoCard(budgetInfo)
+                if(state.budgetInfoMap.isNotEmpty()){
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentPadding = PaddingValues(bottom = 100.dp)
+                    ) {
+                        state.budgetInfoMap.forEach { (categoryName, budgetInfoList) ->
+                            item(key = categoryName) {
+                                Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+                            }
+                            items(
+                                items = budgetInfoList,
+                                key = {it.id}
+                            ) { budgetInfo ->
+                                BudgetInfoCard(budgetInfo)
+                            }
+                        }
                     }
+                }else{
+                    //TODO: Plan budget flow.
                 }
             }
         }
