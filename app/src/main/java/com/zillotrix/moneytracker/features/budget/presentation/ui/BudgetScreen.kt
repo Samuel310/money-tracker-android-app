@@ -11,15 +11,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -144,7 +146,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            if(state.isLoading){
+            if(state.isBudgetOverviewLoading || state.isBudgetInfoMapLoading){
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -156,41 +158,25 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                     CircularProgressIndicator()
                 }
             }else{
-                Row(
-                    modifier = Modifier
-                        .height(45.dp)
-                        .padding(start = 8.dp, end = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Income: ",
-                    )
-                    Text(
-                        text = "5000",
-                        modifier = Modifier.weight(1f),
-                    )
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Income"
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row {
-                    Text(
-                        "Budget",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp)
-                            .weight(1f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
                 if(state.budgetInfoMap.isNotEmpty()){
+                    if(state.budgetOverview != null){
+                        Row(
+                            modifier = Modifier
+                                .height(45.dp)
+                                .padding(start = 8.dp, end = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Budget: ",
+                            )
+                            Text(
+                                text = "${state.budgetOverview?.totalBudget}",
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -199,7 +185,15 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                     ) {
                         state.budgetInfoMap.forEach { (categoryName, budgetInfoList) ->
                             item(key = categoryName) {
-                                Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+                                Row(
+                                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                                ) {
+                                    Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("${state.budgetOverview?.categories[categoryName]?.totalAmount}")
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("(${state.budgetOverview?.categories[categoryName]?.percentage}%)")
+                                }
                             }
                             items(
                                 items = budgetInfoList,
@@ -210,7 +204,46 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                         }
                     }
                 }else{
-                    //TODO: Plan budget flow.
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(horizontal = 16.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "No budgets planned for ${state.currentYearMonth.toMonthName()}",
+                            style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "Start fresh by creating a new plan, or save time by importing your most recent budget settings.",
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.outline,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 20.sp
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Button(
+                            onClick = {
+                                navActions.navigateToNewBudgetScreen(state.currentYearMonth.toIntYYYYMM())
+                            },
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        ) {
+                            Text("Create New Plan")
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                // TODO: Implement logic to copy from most recent month
+                            },
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        ) {
+                            Text("Import Most Recent Plan")
+                        }
+                    }
                 }
             }
         }

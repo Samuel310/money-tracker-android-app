@@ -4,6 +4,7 @@ import com.zillotrix.moneytracker.core.utils.RepoResult
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetCategory
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
+import com.zillotrix.moneytracker.features.budget.domain.model.BudgetOverview
 import com.zillotrix.moneytracker.features.budget.domain.model.Income
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,7 @@ interface BudgetRepository {
     fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<Budget>>, String>
     suspend fun setCategory(name: String) : RepoResult<BudgetCategory, String>
     fun getAllCategories() : Flow<List<BudgetCategory>>
+    fun getBudgetOverview(yearMonth: Int) : RepoResult<Flow<BudgetOverview>, String>
     suspend fun setIncome(income: Income)
     fun getMonthlyTotalIncome(yearMonth: Int) : Flow<Long>
 }

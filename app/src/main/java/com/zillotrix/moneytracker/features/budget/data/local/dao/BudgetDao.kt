@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
-import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryAndExpensesRelation
+import com.zillotrix.moneytracker.features.budget.data.local.dto.BudgetWithCategoryAndExpensesDTO
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -38,7 +38,7 @@ interface BudgetDao {
         yearMonth: Int,
         startDate: Long,
         endDate: Long
-    ): Flow<List<BudgetWithCategoryAndExpensesRelation>>
+    ): Flow<List<BudgetWithCategoryAndExpensesDTO>>
 
     @Query("""
         SELECT * FROM budget
@@ -49,7 +49,7 @@ interface BudgetDao {
     @Transaction
     @Query("""
         SELECT 
-        budget.*, 
+        budget.*,
         SUM(COALESCE(expense.amount, 0)) as totalAmtSpent 
         FROM budget
         LEFT JOIN expense ON budget.id = expense.budgetId 
@@ -62,8 +62,13 @@ interface BudgetDao {
         budgetId: Long,
         startDate: Long,
         endDate: Long
-    ) : Flow<BudgetWithCategoryAndExpensesRelation?>
+    ) : Flow<BudgetWithCategoryAndExpensesDTO?>
 
     @Query("DELETE FROM budget WHERE id = :budgetId")
     suspend fun deleteBudget(budgetId: Long)
+
+    @Query("""
+        SELECT SUM(amount) FROM budget WHERE yearMonth = :yearMonth
+        """)
+    fun getTotalBudget(yearMonth: Int): Flow<Double?>
 }

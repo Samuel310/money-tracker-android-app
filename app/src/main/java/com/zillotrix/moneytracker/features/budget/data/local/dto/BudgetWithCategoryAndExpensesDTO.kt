@@ -1,11 +1,11 @@
-package com.zillotrix.moneytracker.features.budget.data.local.relation
+package com.zillotrix.moneytracker.features.budget.data.local.dto
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetCategoryEntity
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
 
-data class BudgetWithCategoryAndExpensesRelation(
+data class BudgetWithCategoryAndExpensesDTO(
     @Embedded val budget: BudgetEntity,
     @Relation(
         parentColumn = "categoryId",

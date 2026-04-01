@@ -32,32 +32,52 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
         observeAllBudgetInfo()
     }
 
-    private fun observeAllBudgetInfo(){
+    private fun observeAllBudgetInfo() {
         _observeJob?.cancel()
         _observeJob = viewModelScope.launch {
-            when(val res = budgetRepository.getAllBudgetInfoByMonth(_state.value.currentYearMonth.toIntYYYYMM())){
-                is RepoResult.Success -> {
-                    res.data.collect { budgetInfoList ->
-                        val budgetInfoMap = mutableMapOf<String, List<BudgetInfo>>()
-                        for (budgetInfo in budgetInfoList) {
-                            val existingList = budgetInfoMap[budgetInfo.categoryName] ?: emptyList()
-                            budgetInfoMap[budgetInfo.categoryName] = existingList + budgetInfo
+            val yearMonth = _state.value.currentYearMonth.toIntYYYYMM()
+            launch {
+                when (val res = budgetRepository.getBudgetOverview(yearMonth)) {
+                    is RepoResult.Success -> {
+                        res.data.collect { budgetOverview ->
+                            _state.value = _state.value.copy(budgetOverview = budgetOverview, isBudgetOverviewLoading = false)
                         }
-                        _state.value = _state.value.copy(budgetInfoMap = budgetInfoMap, isLoading = false)
+                    }
+
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
+                        _state.value = state.value.copy(isBudgetOverviewLoading = false)
                     }
                 }
-                is RepoResult.Error -> {
-                    _onError.emit(res.error)
-                    _state.value = state.value.copy(isLoading = false)
+            }
+            launch {
+                when (val res = budgetRepository.getAllBudgetInfoByMonth(yearMonth)) {
+                    is RepoResult.Success -> {
+                        res.data.collect { budgetInfoList ->
+                            val budgetInfoMap = mutableMapOf<String, List<BudgetInfo>>()
+                            for (budgetInfo in budgetInfoList) {
+                                val existingList = budgetInfoMap[budgetInfo.categoryName] ?: emptyList()
+                                budgetInfoMap[budgetInfo.categoryName] = existingList + budgetInfo
+                            }
+                            _state.value =
+                                _state.value.copy(budgetInfoMap = budgetInfoMap, isBudgetInfoMapLoading = false)
+                        }
+                    }
+
+                    is RepoResult.Error -> {
+                        _onError.emit(res.error)
+                        _state.value = state.value.copy(isBudgetInfoMapLoading = false)
+                    }
                 }
             }
         }
     }
 
+
     fun onMonthChanged(yearMonth: YearMonth){
         _observeJob?.cancel()
         _observeJob = viewModelScope.launch {
-            _state.value = state.value.copy(isLoading = true, currentYearMonth = yearMonth)
+            _state.value = state.value.copy(isBudgetOverviewLoading = true, isBudgetInfoMapLoading = true, currentYearMonth = yearMonth)
             delay(2000)
             observeAllBudgetInfo()
         }

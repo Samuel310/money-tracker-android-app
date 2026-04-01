@@ -12,9 +12,11 @@ import com.zillotrix.moneytracker.features.budget.data.mapper.toEntity
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetCategory
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
+import com.zillotrix.moneytracker.features.budget.domain.model.BudgetOverview
 import com.zillotrix.moneytracker.features.budget.domain.model.Income
 import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.collections.map
@@ -154,6 +156,33 @@ class BudgetRepositoryImpl @Inject constructor(
             budgetCategoryEntitiesList.map { budgetCategoryEntity ->
                 budgetCategoryEntity.toDomain()
             }
+        }
+    }
+
+    override fun getBudgetOverview(yearMonth: Int) : RepoResult<Flow<BudgetOverview>, String> {
+        try {
+            val res = combine(
+                budgetDao.getTotalBudget(yearMonth),
+                categoryDao.getCategoryTotals(yearMonth)
+            ){ total , categories ->
+                val safeTotal = total ?: 0.0
+                val categoryMap = categories.associateBy(
+                    keySelector = { it.categoryName },
+                    valueTransform = { categoryTotalEntity ->
+                        val percentage = if (safeTotal == 0.0) 0.0 else (categoryTotalEntity.totalAmount / safeTotal) * 100
+                        categoryTotalEntity.toDomain(percentage)
+                    }
+                )
+                BudgetOverview(
+                    yearMonth = yearMonth,
+                    totalBudget = safeTotal,
+                    categories = categoryMap
+                )
+            }
+            return RepoResult.Success(res)
+        }catch (e : Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to retrieve budget overview")
         }
     }
 

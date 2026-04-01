@@ -2,10 +2,10 @@ package com.zillotrix.moneytracker.features.budget.data.mapper
 
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetCategoryEntity
 import com.zillotrix.moneytracker.features.budget.data.local.entity.BudgetEntity
-import com.zillotrix.moneytracker.features.budget.data.local.relation.BudgetWithCategoryAndExpensesRelation
+import com.zillotrix.moneytracker.features.budget.data.local.dto.BudgetWithCategoryAndExpensesDTO
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 
-fun BudgetWithCategoryAndExpensesRelation.toDomain(): BudgetInfo {
+fun BudgetWithCategoryAndExpensesDTO.toDomain(): BudgetInfo {
     return BudgetInfo(
         id = this.budget.id,
         name = this.budget.name,
@@ -17,8 +17,8 @@ fun BudgetWithCategoryAndExpensesRelation.toDomain(): BudgetInfo {
     )
 }
 
-fun BudgetInfo.toEntity(): BudgetWithCategoryAndExpensesRelation {
-    return BudgetWithCategoryAndExpensesRelation(
+fun BudgetInfo.toDTO(): BudgetWithCategoryAndExpensesDTO {
+    return BudgetWithCategoryAndExpensesDTO(
         budget = BudgetEntity(
             id = this.id,
             name = this.name,
