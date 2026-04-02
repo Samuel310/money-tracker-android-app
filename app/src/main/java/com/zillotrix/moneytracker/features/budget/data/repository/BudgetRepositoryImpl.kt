@@ -68,16 +68,10 @@ class BudgetRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getBudgetInfoById(
-        budgetId: Long,
-        startDate: Long,
-        endDate: Long
-    ): RepoResult<Flow<BudgetInfo?>, String> {
+    override fun getBudgetInfoById(budgetId: Long): RepoResult<Flow<BudgetInfo?>, String> {
         try {
             val res = budgetDao.getBudgetWithCategoryAndExpensesById(
                budgetId = budgetId,
-               startDate = startDate,
-               endDate = endDate
             ).map { value -> value?.toDomain() }
             return RepoResult.Success(res)
         }catch (e : Exception){
@@ -102,11 +96,8 @@ class BudgetRepositoryImpl @Inject constructor(
 
     override fun getAllBudgetInfoByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String> {
         try {
-            val (startDate, endDate) = yearMonth.toYearMonth().getMonthRange()
             val res = budgetDao.getBudgetsWithCategoryAndExpensesForMonth(
                 yearMonth = yearMonth,
-                startDate = startDate,
-                endDate = endDate
             ).map { budgetWithCategoryRelationList ->
                 budgetWithCategoryRelationList.map { budgetWithCategoryRelation ->
                     budgetWithCategoryRelation.toDomain()

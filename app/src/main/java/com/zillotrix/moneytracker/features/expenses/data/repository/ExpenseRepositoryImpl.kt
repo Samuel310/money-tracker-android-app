@@ -2,6 +2,7 @@ package com.zillotrix.moneytracker.features.expenses.data.repository
 
 import com.zillotrix.moneytracker.core.utils.RepoResult
 import com.zillotrix.moneytracker.core.utils.getMonthRange
+import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.features.expenses.data.local.dao.ExpenseDao
 import com.zillotrix.moneytracker.features.expenses.data.mapper.toDomain
 import com.zillotrix.moneytracker.features.expenses.data.mapper.toEntity
@@ -27,6 +28,9 @@ class ExpenseRepositoryImpl @Inject constructor(
             if(expense.budgetId <= 0){
                 return RepoResult.Error("Select a valid budget")
             }
+            if(expense.budgetYearMonth <= 0){
+                return RepoResult.Error("Invalid budget year-month selected")
+            }
             expenseDao.insertExpense(expense.toEntity())
             return RepoResult.Success(true)
         }catch (e : Exception){
@@ -37,10 +41,8 @@ class ExpenseRepositoryImpl @Inject constructor(
 
     override fun getExpensesForBudgetPerMonth(budgetId: Long, yearMonth: YearMonth): RepoResult<Flow<List<Expense>>, String> {
         try {
-            val (startDate, endDate) = yearMonth.getMonthRange()
             val res = expenseDao.getExpensesForBudgetBetween(
-                startDate = startDate,
-                endDate = endDate,
+                budgetYearMonth = yearMonth.toIntYYYYMM(),
                 budgetId = budgetId,
             ).map { expenseEntityList ->
                 expenseEntityList.map { expenseEntity -> expenseEntity.toDomain() }

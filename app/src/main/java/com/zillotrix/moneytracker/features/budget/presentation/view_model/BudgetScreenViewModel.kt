@@ -101,6 +101,7 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
                 }
                 is RepoResult.Error -> {
                     _onError.emit(res.error)
+                    _state.value = state.value.copy(isBudgetOverviewLoading = false, isBudgetInfoMapLoading = false)
                 }
             }
         }

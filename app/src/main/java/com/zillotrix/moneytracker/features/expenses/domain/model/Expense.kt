@@ -7,5 +7,6 @@ data class Expense(
     val name: String,
     val amount: Long,
     val budgetId: Long,
+    val budgetYearMonth: Int,
     val date: Date
 )

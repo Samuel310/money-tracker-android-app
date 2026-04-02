@@ -53,7 +53,7 @@ class NewExpenseViewModel @Inject constructor(
                 _state.value = _state.value.copy(isLoading = true)
                 when(val res = expenseRepository.getExpenseById(expenseId)){
                     is RepoResult.Success -> {
-                        if(res.data == null || res.data.budgetId != initialBudgetId){
+                        if(res.data == null || res.data.budgetId != initialBudgetId || res.data.budgetYearMonth != initialYearMonth){
                             _onError.emit("Invalid Budget found")
                             return@launch
                         }
@@ -130,6 +130,7 @@ class NewExpenseViewModel @Inject constructor(
                     name = _state.value.name,
                     amount = _state.value.amt.toPaisa(),
                     budgetId = _state.value.selectedBudget?.id ?: 0L,
+                    budgetYearMonth = _state.value.selectedBudget?.yearMonth ?: 0,
                     date = _state.value.date,
                 )
             )

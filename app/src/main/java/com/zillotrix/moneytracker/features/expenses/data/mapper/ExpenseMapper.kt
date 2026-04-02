@@ -11,6 +11,7 @@ fun ExpenseEntity.toDomain(): Expense {
         amount = this.amount,
         budgetId = this.budgetId,
         date = Date(this.date),
+        budgetYearMonth = this.budgetYearMonth,
     )
 }
 
@@ -21,5 +22,6 @@ fun Expense.toEntity() : ExpenseEntity{
         amount = this.amount,
         budgetId = this.budgetId,
         date = this.date.time,
+        budgetYearMonth = this.budgetYearMonth
     )
 }

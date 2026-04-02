@@ -48,13 +48,12 @@ interface ExpenseDao {
 
     @Query("""
         SELECT * FROM expense
-        WHERE date BETWEEN :startDate AND :endDate AND budgetId = :budgetId
+        WHERE budgetId = :budgetId AND budgetYearMonth = :budgetYearMonth
         ORDER BY date DESC
     """)
     fun getExpensesForBudgetBetween(
         budgetId: Long,
-        startDate: Long,
-        endDate: Long,
+        budgetYearMonth: Int,
     ): Flow<List<ExpenseEntity>>
 
     @Query("DELETE FROM expense WHERE id = :id")

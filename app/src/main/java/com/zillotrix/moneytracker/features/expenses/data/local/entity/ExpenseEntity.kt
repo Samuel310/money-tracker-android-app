@@ -27,5 +27,6 @@ data class ExpenseEntity(
     val name: String,
     val amount: Long,
     val budgetId: Long,
+    val budgetYearMonth: Int,
     val date: Long
 )

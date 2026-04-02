@@ -61,11 +61,8 @@ class ExpenseScreenViewModel @Inject constructor(
     private fun loadBudget(){
         //TODO: enable loader
         viewModelScope.launch {
-            val (startDate, endDate) = _state.value.yearMonth.toYearMonth().getMonthRange()
             val res = budgetRepository.getBudgetInfoById(
                 budgetId = _state.value.budgetId,
-                startDate = startDate,
-                endDate = endDate,
             )
             when(res){
                 is RepoResult.Success -> {

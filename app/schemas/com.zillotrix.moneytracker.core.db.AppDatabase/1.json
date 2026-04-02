@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "660d341c25812984adbd47f7addbe534",
+    "identityHash": "8085b66e1fe30b1450fea3bbaa3e368d",
     "entities": [
       {
         "tableName": "income",
@@ -135,7 +135,7 @@
       },
       {
         "tableName": "expense",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` INTEGER NOT NULL, `budgetId` INTEGER NOT NULL, `date` INTEGER NOT NULL, FOREIGN KEY(`budgetId`) REFERENCES `budget`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` INTEGER NOT NULL, `budgetId` INTEGER NOT NULL, `budgetYearMonth` INTEGER NOT NULL, `date` INTEGER NOT NULL, FOREIGN KEY(`budgetId`) REFERENCES `budget`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -158,6 +158,12 @@
           {
             "fieldPath": "budgetId",
             "columnName": "budgetId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "budgetYearMonth",
+            "columnName": "budgetYearMonth",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -211,7 +217,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '660d341c25812984adbd47f7addbe534')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8085b66e1fe30b1450fea3bbaa3e368d')"
     ]
   }
 }
