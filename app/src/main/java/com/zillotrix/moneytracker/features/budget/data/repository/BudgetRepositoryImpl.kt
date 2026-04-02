@@ -186,6 +186,25 @@ class BudgetRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setBudgetFromMostRecentBudget(yearMonth: Int): RepoResult<Boolean, String> {
+        try {
+            val mostRecentMonth = budgetDao.getMostRecentBudgetMonth(targetYearMonth = yearMonth)
+                ?: return RepoResult.Error("No previous budget found")
+            val existingBudgets = budgetDao.getBudgetsForMonthSnapshot(yearMonth = mostRecentMonth)
+            val newBudgets = existingBudgets.map { budget ->
+                budget.copy(
+                    id = 0L,
+                    yearMonth = yearMonth
+                )
+            }
+            budgetDao.insertBudgets(newBudgets)
+            return RepoResult.Success(true)
+        }catch (e: Exception){
+            //TODO: implement logger
+            return RepoResult.Error("Something went wrong, Unable to create budget")
+        }
+    }
+
     override suspend fun setIncome(income: Income) {
         incomeDao.insertIncome(income.toEntity())
     }

@@ -90,4 +90,19 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
     fun toggleFab(value: Boolean){
         _state.value = _state.value.copy(isFabExpanded = value)
     }
+
+    fun setBudgetFromMostRecentBudget(){
+        viewModelScope.launch{
+            _state.value = state.value.copy(isBudgetOverviewLoading = true, isBudgetInfoMapLoading = true)
+            val res = budgetRepository.setBudgetFromMostRecentBudget(yearMonth = _state.value.currentYearMonth.toIntYYYYMM())
+            when(res){
+                is RepoResult.Success -> {
+                    println("setBudgetFromMostRecentBudget Success")
+                }
+                is RepoResult.Error -> {
+                    _onError.emit(res.error)
+                }
+            }
+        }
+    }
 }

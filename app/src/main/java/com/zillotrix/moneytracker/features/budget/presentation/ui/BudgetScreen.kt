@@ -238,7 +238,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                         }
                         OutlinedButton(
                             onClick = {
-                                // TODO: Implement logic to copy from most recent month
+                                budgetScreenViewModel.setBudgetFromMostRecentBudget()
                             },
                             modifier = Modifier.fillMaxWidth(0.8f)
                         ) {

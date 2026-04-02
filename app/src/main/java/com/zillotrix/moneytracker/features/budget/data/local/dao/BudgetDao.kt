@@ -14,12 +14,22 @@ interface BudgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBudget(budget: BudgetEntity) : Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBudgets(budgets: List<BudgetEntity>)
+
     @Query("""
         SELECT * FROM budget
         WHERE yearMonth = :yearMonth
         ORDER BY name ASC
     """)
     fun getBudgetsForMonth(yearMonth: Int): Flow<List<BudgetEntity>>
+
+    @Query("""
+        SELECT * FROM budget
+        WHERE yearMonth = :yearMonth
+        ORDER BY name ASC
+    """)
+    suspend fun getBudgetsForMonthSnapshot(yearMonth: Int): List<BudgetEntity>
 
     @Transaction
     @Query("""
@@ -63,6 +73,9 @@ interface BudgetDao {
         startDate: Long,
         endDate: Long
     ) : Flow<BudgetWithCategoryAndExpensesDTO?>
+
+    @Query("SELECT MAX(yearMonth) FROM budget WHERE yearMonth < :targetYearMonth")
+    suspend fun getMostRecentBudgetMonth(targetYearMonth: Int): Int?
 
     @Query("DELETE FROM budget WHERE id = :budgetId")
     suspend fun deleteBudget(budgetId: Long)

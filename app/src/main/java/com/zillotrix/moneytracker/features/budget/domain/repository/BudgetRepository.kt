@@ -17,6 +17,7 @@ interface BudgetRepository {
     suspend fun setCategory(name: String) : RepoResult<BudgetCategory, String>
     fun getAllCategories() : Flow<List<BudgetCategory>>
     fun getBudgetOverview(yearMonth: Int) : RepoResult<Flow<BudgetOverview>, String>
+    suspend fun setBudgetFromMostRecentBudget(yearMonth: Int) : RepoResult<Boolean, String>
     suspend fun setIncome(income: Income)
     fun getMonthlyTotalIncome(yearMonth: Int) : Flow<Long>
 }
