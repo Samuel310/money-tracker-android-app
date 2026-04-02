@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zillotrix.moneytracker.core.utils.RepoResult
+import com.zillotrix.moneytracker.core.utils.toPaisa
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetCategory
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
@@ -86,7 +87,7 @@ class NewBudgetViewModel @Inject constructor(
                 BudgetInfo(
                     0L,
                     name = _state.value.name,
-                    amount = if (_state.value.amt.isEmpty()) 0L else _state.value.amt.toLong(),
+                    amount = _state.value.amt.toPaisa(),
                     categoryId = _state.value.selectedBudgetCategory?.id ?: 0L,
                     yearMonth = _state.value.yearMonth,
                     categoryName = _state.value.selectedBudgetCategory?.name ?: "",

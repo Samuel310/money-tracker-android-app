@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zillotrix.moneytracker.core.navigation.LocalNavActions
+import com.zillotrix.moneytracker.core.utils.toDisplayAmount
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.ExpenseProgressBar
 
@@ -78,7 +79,7 @@ fun BudgetInfoCard(
                         color = MaterialTheme.colorScheme.outline
                     )
                     Text(
-                        text = "₹$totalAmtSpent",
+                        text = totalAmtSpent.toDisplayAmount(),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                         color = if (progress >= 1f) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
                     )
@@ -90,7 +91,7 @@ fun BudgetInfoCard(
                         color = MaterialTheme.colorScheme.outline
                     )
                     Text(
-                        text = "₹$remainingAmount",
+                        text = remainingAmount.toDisplayAmount(),
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                         color = if (remainingAmount < 0) MaterialTheme.colorScheme.error else Color(0xFF4CAF50) // Green for healthy budget
                     )
@@ -100,7 +101,7 @@ fun BudgetInfoCard(
             ExpenseProgressBar(progress)
 
             Text(
-                text = "of ₹$plannedAmt planned",
+                text = "of ${plannedAmt.toDisplayAmount()} planned",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.align(Alignment.End)

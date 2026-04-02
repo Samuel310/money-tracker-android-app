@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.zillotrix.moneytracker.core.navigation.LocalNavActions
+import com.zillotrix.moneytracker.core.utils.toDisplayAmount
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.core.utils.toMonthName
 import com.zillotrix.moneytracker.core.utils.toYearString
@@ -170,7 +171,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                                 text = "Budget: ",
                             )
                             Text(
-                                text = "${state.budgetOverview?.totalBudget}",
+                                text = state.budgetOverview?.totalBudget?.toDisplayAmount() ?: "",
                                 modifier = Modifier.weight(1f),
                             )
                         }
@@ -190,7 +191,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                                 ) {
                                     Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("${state.budgetOverview?.categories[categoryName]?.totalAmount}")
+                                    Text(state.budgetOverview?.categories[categoryName]?.totalAmount?.toDisplayAmount() ?: "")
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("(${state.budgetOverview?.categories[categoryName]?.percentage}%)")
                                 }

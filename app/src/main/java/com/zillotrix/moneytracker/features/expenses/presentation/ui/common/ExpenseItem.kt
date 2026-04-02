@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.zillotrix.moneytracker.core.utils.toDayMonthYearFull
+import com.zillotrix.moneytracker.core.utils.toDisplayAmount
 import com.zillotrix.moneytracker.features.expenses.domain.model.Expense
 
 @Composable
@@ -54,7 +55,7 @@ fun ExpenseItem(expense: Expense, onNavigateToNewExpenseScreen: () -> Unit) {
             }
 
             Text(
-                text = "₹${expense.amount}",
+                text = expense.amount.toDisplayAmount(),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),

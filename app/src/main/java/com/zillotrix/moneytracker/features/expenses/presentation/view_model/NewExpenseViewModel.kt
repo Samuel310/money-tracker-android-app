@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zillotrix.moneytracker.core.utils.RepoResult
+import com.zillotrix.moneytracker.core.utils.toPaisa
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget
 import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetRepository
@@ -127,7 +128,7 @@ class NewExpenseViewModel @Inject constructor(
                 expense = Expense(
                     id = _state.value.expenseId,
                     name = _state.value.name,
-                    amount = if (_state.value.amt.isEmpty()) 0L else _state.value.amt.toLong(),
+                    amount = _state.value.amt.toPaisa(),
                     budgetId = _state.value.selectedBudget?.id ?: 0L,
                     date = _state.value.date,
                 )

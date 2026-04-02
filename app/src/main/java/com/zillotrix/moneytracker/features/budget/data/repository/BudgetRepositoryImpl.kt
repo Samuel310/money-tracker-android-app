@@ -165,11 +165,11 @@ class BudgetRepositoryImpl @Inject constructor(
                 budgetDao.getTotalBudget(yearMonth),
                 categoryDao.getCategoryTotals(yearMonth)
             ){ total , categories ->
-                val safeTotal = total ?: 0.0
+                val safeTotal = total ?: 0L
                 val categoryMap = categories.associateBy(
                     keySelector = { it.categoryName },
                     valueTransform = { categoryTotalEntity ->
-                        val percentage = if (safeTotal == 0.0) 0.0 else (categoryTotalEntity.totalAmount / safeTotal) * 100
+                        val percentage = if (safeTotal == 0L) 0.0 else (categoryTotalEntity.totalAmount.toDouble() / safeTotal) * 100
                         categoryTotalEntity.toDomain(percentage)
                     }
                 )

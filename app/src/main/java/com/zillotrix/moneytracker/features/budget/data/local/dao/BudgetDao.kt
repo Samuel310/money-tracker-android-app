@@ -70,5 +70,5 @@ interface BudgetDao {
     @Query("""
         SELECT SUM(amount) FROM budget WHERE yearMonth = :yearMonth
         """)
-    fun getTotalBudget(yearMonth: Int): Flow<Double?>
+    fun getTotalBudget(yearMonth: Int): Flow<Long?>
 }
