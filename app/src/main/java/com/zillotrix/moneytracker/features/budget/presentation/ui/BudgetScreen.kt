@@ -1,7 +1,6 @@
 package com.zillotrix.moneytracker.features.budget.presentation.ui
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,13 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,11 +35,12 @@ import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toDisplayAmount
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.core.utils.toMonthName
-import com.zillotrix.moneytracker.core.utils.toYearString
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.CurrentMonthSection
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthPickerDialog
 import com.zillotrix.moneytracker.features.budget.presentation.view_model.BudgetScreenViewModel
-import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetInfoCard
+import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.BudgetInfoCard
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.ExpandableFab
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthlyOverallPSAView
 import kotlinx.coroutines.launch
 
 @Composable
@@ -102,51 +98,17 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                 .fillMaxHeight()
                 .padding(innerPadding)
         ) {
-            Row(
-                modifier = Modifier
-                    .height(45.dp)
-                    .padding(start = 8.dp, end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = {
-                    budgetScreenViewModel.onMonthChanged(state.currentYearMonth.minusMonths(1))
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Previous Month"
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable(onClick = {
-                            budgetScreenViewModel.showMonthPickerDialog(show = true)
-                        }),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = state.currentYearMonth.toMonthName(),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = state.currentYearMonth.toYearString(),
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-
-                IconButton(onClick = {
-                    budgetScreenViewModel.onMonthChanged(state.currentYearMonth.plusMonths(1))
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Next Month"
-                    )
-                }
-            }
             Spacer(modifier = Modifier.height(8.dp))
+            CurrentMonthSection(
+                currentYearMonth = state.currentYearMonth,
+                onMonthChanged = { newMonth ->
+                    budgetScreenViewModel.onMonthChanged(newMonth)
+                },
+                onSelectMonthBtnClicked = {
+                    budgetScreenViewModel.showMonthPickerDialog(show = true)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             if(state.isBudgetOverviewLoading || state.isBudgetInfoMapLoading){
                 Column(
                     modifier = Modifier
@@ -161,23 +123,13 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
             }else{
                 if(state.budgetInfoMap.isNotEmpty()){
                     if(state.budgetOverview != null){
-                        Row(
-                            modifier = Modifier
-                                .height(45.dp)
-                                .padding(start = 8.dp, end = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Budget: ",
-                            )
-                            Text(
-                                text = state.budgetOverview?.totalBudget?.toDisplayAmount() ?: "",
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        MonthlyOverallPSAView(
+                            plannedAmt = state.budgetOverview?.totalBudget ?: 0L,
+                            spentAmt = state.budgetOverview?.totalSpentAmt ?: 0L,
+                            availableAmt = state.budgetOverview?.totalAvailableAmt ?: 0L,
+                        )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -191,7 +143,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                                 ) {
                                     Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(state.budgetOverview?.categories[categoryName]?.totalAmount?.toDisplayAmount() ?: "")
+                                    Text(state.budgetOverview?.categories[categoryName]?.totalPlannedAmount?.toDisplayAmount() ?: "")
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("(${state.budgetOverview?.categories[categoryName]?.percentage}%)")
                                 }
@@ -216,14 +168,14 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                     ) {
                         Text(
                             text = "No budgets planned for ${state.currentYearMonth.toMonthName()}",
-                            style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Text(
                             text = "Start fresh by creating a new plan, or save time by importing your most recent budget settings.",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                            color = androidx.compose.material3.MaterialTheme.colorScheme.outline,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.outline,
                             textAlign = TextAlign.Center,
                             lineHeight = 20.sp
                         )

@@ -32,7 +32,7 @@ import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toShortMonthYear
 import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.ExpenseItem
-import com.zillotrix.moneytracker.features.budget.presentation.ui.common.BudgetInfoCard
+import com.zillotrix.moneytracker.features.expenses.presentation.ui.common.BudgetInfoCard
 import com.zillotrix.moneytracker.features.expenses.presentation.view_model.ExpenseScreenViewModel
 import kotlinx.coroutines.launch
 

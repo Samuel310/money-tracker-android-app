@@ -58,4 +58,11 @@ interface ExpenseDao {
 
     @Query("DELETE FROM expense WHERE id = :id")
     suspend fun deleteExpense(id: Long)
+
+    @Query("""
+        SELECT IFNULL(SUM(amount), 0)
+        FROM expense
+        WHERE budgetYearMonth = :budgetYearMonth
+    """)
+    fun getMonthlyTotalExpenseAmt(budgetYearMonth: Int): Flow<Long>
 }

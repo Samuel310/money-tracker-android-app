@@ -1,8 +1,6 @@
 package com.zillotrix.moneytracker.features.budget.data.repository
 
 import com.zillotrix.moneytracker.core.utils.RepoResult
-import com.zillotrix.moneytracker.core.utils.getMonthRange
-import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
@@ -15,6 +13,7 @@ import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetOverview
 import com.zillotrix.moneytracker.features.budget.domain.model.Income
 import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetRepository
+import com.zillotrix.moneytracker.features.expenses.data.local.dao.ExpenseDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -25,6 +24,7 @@ class BudgetRepositoryImpl @Inject constructor(
     private val budgetDao: BudgetDao,
     private val categoryDao: BudgetCategoryDao,
     private val incomeDao: IncomeDao,
+    private val expenseDao: ExpenseDao,
 ) : BudgetRepository {
 
     override suspend fun setBudget(budgetInfo: BudgetInfo) : RepoResult<Boolean, String> {
@@ -154,20 +154,23 @@ class BudgetRepositoryImpl @Inject constructor(
         try {
             val res = combine(
                 budgetDao.getTotalBudget(yearMonth),
-                categoryDao.getCategoryTotals(yearMonth)
-            ){ total , categories ->
+                categoryDao.getAllCategoryWisePlannedTotalAmt(yearMonth),
+                expenseDao.getMonthlyTotalExpenseAmt(yearMonth),
+            ){ total , categories, totalSpentAmt ->
                 val safeTotal = total ?: 0L
                 val categoryMap = categories.associateBy(
                     keySelector = { it.categoryName },
                     valueTransform = { categoryTotalEntity ->
-                        val percentage = if (safeTotal == 0L) 0.0 else (categoryTotalEntity.totalAmount.toDouble() / safeTotal) * 100
+                        val percentage = if (safeTotal == 0L) 0.0 else (categoryTotalEntity.totalPlannedAmount.toDouble() / safeTotal) * 100
                         categoryTotalEntity.toDomain(percentage)
                     }
                 )
                 BudgetOverview(
                     yearMonth = yearMonth,
                     totalBudget = safeTotal,
-                    categories = categoryMap
+                    categories = categoryMap,
+                    totalSpentAmt = totalSpentAmt,
+                    totalAvailableAmt = safeTotal - totalSpentAmt,
                 )
             }
             return RepoResult.Success(res)

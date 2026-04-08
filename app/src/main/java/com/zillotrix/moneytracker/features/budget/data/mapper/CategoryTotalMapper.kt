@@ -8,7 +8,7 @@ fun CategoryTotalDTO.toDomain(percentage: Double): CategoryTotal {
     return CategoryTotal(
         categoryId = this.categoryId,
         categoryName = this.categoryName,
-        totalAmount = this.totalAmount,
+        totalPlannedAmount = this.totalPlannedAmount,
         percentage = percentage,
     )
 }
@@ -17,6 +17,6 @@ fun CategoryTotal.toDTO(): CategoryTotalDTO {
     return CategoryTotalDTO(
         categoryId = this.categoryId,
         categoryName = this.categoryName,
-        totalAmount = this.totalAmount,
+        totalPlannedAmount = this.totalPlannedAmount,
     )
 }

@@ -21,12 +21,12 @@ interface BudgetCategoryDao {
     suspend fun deleteCategory(id: Long)
 
     @Query("""
-        SELECT bc.id as categoryId, bc.name as categoryName, SUM(b.amount) as totalAmount
+        SELECT bc.id as categoryId, bc.name as categoryName, SUM(b.amount) as totalPlannedAmount
         FROM budget b
         INNER JOIN budget_category bc
         ON b.categoryId = bc.id
         WHERE b.yearMonth = :yearMonth
         GROUP BY bc.id, bc.name
     """)
-    fun getCategoryTotals(yearMonth: Int): Flow<List<CategoryTotalDTO>>
+    fun getAllCategoryWisePlannedTotalAmt(yearMonth: Int): Flow<List<CategoryTotalDTO>>
 }
