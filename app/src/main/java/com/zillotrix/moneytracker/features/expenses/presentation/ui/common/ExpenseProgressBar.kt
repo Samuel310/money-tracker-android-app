@@ -21,12 +21,12 @@ import com.zillotrix.moneytracker.core.ui.theme.MoneyTrackerTheme
 
 @Composable
 fun ExpenseProgressBar(
-    progress: Float
+    progress: Float,
+    modifier: Modifier,
+    shopProgressText: Boolean = true,
 ){
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
+        modifier = modifier,
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -42,14 +42,16 @@ fun ExpenseProgressBar(
             shape = MaterialTheme.shapes.medium
         ) {}
 
-        Text(
-            text = "${(progress * 100).toInt()}%",
-            modifier = Modifier.align(Alignment.Center),
-            style = MaterialTheme.typography.labelLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            color = if (progress > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
-        )
+        if(shopProgressText){
+            Text(
+                text = "${(progress * 100).toInt()}%",
+                modifier = Modifier.align(Alignment.Center),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = if (progress > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
@@ -63,7 +65,9 @@ fun PreviewExpenseProgressBar(){
                 .systemBarsPadding()
         ) {
             Column {
-                ExpenseProgressBar(progress = 0.9f)
+                ExpenseProgressBar(progress = 0.9f, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp))
             }
         }
     }

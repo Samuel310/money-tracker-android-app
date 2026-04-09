@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.collections.map
+import kotlin.math.round
 
 class BudgetRepositoryImpl @Inject constructor(
     private val budgetDao: BudgetDao,
@@ -162,7 +163,8 @@ class BudgetRepositoryImpl @Inject constructor(
                     keySelector = { it.categoryName },
                     valueTransform = { categoryTotalEntity ->
                         val percentage = if (safeTotal == 0L) 0.0 else (categoryTotalEntity.totalPlannedAmount.toDouble() / safeTotal) * 100
-                        categoryTotalEntity.toDomain(percentage)
+                        val roundPercentage = round(percentage * 100) / 100.0
+                        categoryTotalEntity.toDomain(roundPercentage)
                     }
                 )
                 BudgetOverview(

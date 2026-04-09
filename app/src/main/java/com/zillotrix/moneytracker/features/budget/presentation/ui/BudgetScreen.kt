@@ -35,6 +35,7 @@ import com.zillotrix.moneytracker.core.navigation.LocalNavActions
 import com.zillotrix.moneytracker.core.utils.toDisplayAmount
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
 import com.zillotrix.moneytracker.core.utils.toMonthName
+import com.zillotrix.moneytracker.features.budget.presentation.ui.common.CategoryGroupCard
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.CurrentMonthSection
 import com.zillotrix.moneytracker.features.budget.presentation.ui.common.MonthPickerDialog
 import com.zillotrix.moneytracker.features.budget.presentation.view_model.BudgetScreenViewModel
@@ -138,21 +139,7 @@ fun BudgetScreen(budgetScreenViewModel: BudgetScreenViewModel = hiltViewModel<Bu
                     ) {
                         state.budgetInfoMap.forEach { (categoryName, budgetInfoList) ->
                             item(key = categoryName) {
-                                Row(
-                                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-                                ) {
-                                    Text(categoryName,  fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(state.budgetOverview?.categories[categoryName]?.totalPlannedAmount?.toDisplayAmount() ?: "")
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text("(${state.budgetOverview?.categories[categoryName]?.percentage}%)")
-                                }
-                            }
-                            items(
-                                items = budgetInfoList,
-                                key = {it.id}
-                            ) { budgetInfo ->
-                                BudgetInfoCard(budgetInfo)
+                                CategoryGroupCard(budgetInfoList = budgetInfoList, categoryTotal = state.budgetOverview?.categories[categoryName])
                             }
                         }
                     }
