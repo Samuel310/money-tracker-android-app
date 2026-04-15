@@ -56,8 +56,8 @@ class BudgetScreenViewModel @Inject constructor(private val budgetRepository: Bu
                         res.data.collect { budgetInfoList ->
                             val budgetInfoMap = mutableMapOf<String, List<BudgetInfo>>()
                             for (budgetInfo in budgetInfoList) {
-                                val existingList = budgetInfoMap[budgetInfo.categoryName] ?: emptyList()
-                                budgetInfoMap[budgetInfo.categoryName] = existingList + budgetInfo
+                                val existingList = budgetInfoMap[budgetInfo.budgetCategory.name] ?: emptyList()
+                                budgetInfoMap[budgetInfo.budgetCategory.name] = existingList + budgetInfo
                             }
                             _state.value =
                                 _state.value.copy(budgetInfoMap = budgetInfoMap, isBudgetInfoMapLoading = false)

@@ -3,15 +3,18 @@ package com.zillotrix.moneytracker.core.di
 import android.content.Context
 import androidx.room.Room
 import com.zillotrix.moneytracker.core.db.AppDatabase
+import com.zillotrix.moneytracker.core.db.DatabaseSeeder
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetCategoryDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.BudgetDao
 import com.zillotrix.moneytracker.features.expenses.data.local.dao.ExpenseDao
 import com.zillotrix.moneytracker.features.budget.data.local.dao.IncomeDao
+import com.zillotrix.moneytracker.features.budget.domain.repository.CategoryRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Provider
 import javax.inject.Singleton
 
 
@@ -22,13 +25,16 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDB(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        categoryRepository: Provider<CategoryRepository>
     ) : AppDatabase{
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "shopping-app-db"
-        ).build()
+            "money_tracker_db"
+        )
+            .addCallback(DatabaseSeeder(context, categoryRepository))
+            .build()
     }
 
     @Provides

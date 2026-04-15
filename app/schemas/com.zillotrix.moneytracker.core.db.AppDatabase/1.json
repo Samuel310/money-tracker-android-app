@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8085b66e1fe30b1450fea3bbaa3e368d",
+    "identityHash": "95419a33690e321a1fd5f54fe6ad7d7f",
     "entities": [
       {
         "tableName": "income",
@@ -36,7 +36,7 @@
       },
       {
         "tableName": "budget_category",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `info` TEXT NOT NULL, `icon` TEXT NOT NULL, `color` TEXT NOT NULL, `isDefault` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -48,6 +48,30 @@
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info",
+            "columnName": "info",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDefault",
+            "columnName": "isDefault",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -217,7 +241,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8085b66e1fe30b1450fea3bbaa3e368d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '95419a33690e321a1fd5f54fe6ad7d7f')"
     ]
   }
 }

@@ -9,12 +9,11 @@ import com.zillotrix.moneytracker.features.budget.domain.model.Income
 import kotlinx.coroutines.flow.Flow
 
 interface BudgetRepository {
-    suspend fun setBudget(budgetInfo: BudgetInfo) : RepoResult<Boolean, String>
+    suspend fun setBudget(budget: Budget, budgetCategory: BudgetCategory?) : RepoResult<Boolean, String>
     fun getBudgetInfoById(budgetId: Long) : RepoResult<Flow<BudgetInfo?>, String>
     suspend fun getBudgetById(budgetId: Long) : RepoResult<Budget?, String>
     fun getAllBudgetInfoByMonth(yearMonth: Int): RepoResult<Flow<List<BudgetInfo>>, String>
     fun getAllBudgetByMonth(yearMonth: Int): RepoResult<Flow<List<Budget>>, String>
-    suspend fun setCategory(name: String) : RepoResult<BudgetCategory, String>
     fun getAllCategories() : Flow<List<BudgetCategory>>
     fun getBudgetOverview(yearMonth: Int) : RepoResult<Flow<BudgetOverview>, String>
     suspend fun setBudgetFromMostRecentBudget(yearMonth: Int) : RepoResult<Boolean, String>

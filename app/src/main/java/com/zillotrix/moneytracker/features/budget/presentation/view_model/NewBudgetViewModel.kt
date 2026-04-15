@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.zillotrix.moneytracker.core.utils.RepoResult
 import com.zillotrix.moneytracker.core.utils.toPaisa
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
+import com.zillotrix.moneytracker.features.budget.domain.model.Budget
 import com.zillotrix.moneytracker.features.budget.domain.model.BudgetCategory
-import com.zillotrix.moneytracker.features.budget.domain.model.BudgetInfo
 import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetRepository
 import com.zillotrix.moneytracker.features.budget.presentation.state.NewBudgetVMState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,19 +47,6 @@ class NewBudgetViewModel @Inject constructor(
         }
     }
 
-    fun addCategory(name: String){
-        viewModelScope.launch {
-            when(val res = budgetRepository.setCategory(name)){
-                is RepoResult.Success -> {
-                    _state.value = _state.value.copy(selectedBudgetCategory = res.data)
-                }
-                is RepoResult.Error -> {
-                    _onError.emit(res.error)
-                }
-            }
-        }
-    }
-
     fun onCategoryChanged(budgetCategory: BudgetCategory){
         _state.value = _state.value.copy(selectedBudgetCategory = budgetCategory)
     }
@@ -84,15 +71,14 @@ class NewBudgetViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             when(val res = budgetRepository.setBudget(
-                BudgetInfo(
-                    0L,
+                budget = Budget(
+                    id = 0L,
                     name = _state.value.name,
                     amount = _state.value.amt.toPaisa(),
                     categoryId = _state.value.selectedBudgetCategory?.id ?: 0L,
                     yearMonth = _state.value.yearMonth,
-                    categoryName = _state.value.selectedBudgetCategory?.name ?: "",
-                    totalAmtSpent = 0L
-                )
+                ),
+                budgetCategory = _state.value.selectedBudgetCategory,
             )){
                 is RepoResult.Success -> {
                     _state.value = _state.value.copy(isLoading = false)

@@ -10,10 +10,9 @@ fun BudgetWithCategoryAndExpensesDTO.toDomain(): BudgetInfo {
         id = this.budget.id,
         name = this.budget.name,
         amount = this.budget.amount,
-        categoryId = this.budget.categoryId,
         yearMonth = this.budget.yearMonth,
-        categoryName = this.category.name,
         totalAmtSpent = this.totalAmtSpent,
+        budgetCategory = this.category.toDomain(),
     )
 }
 
@@ -23,13 +22,10 @@ fun BudgetInfo.toDTO(): BudgetWithCategoryAndExpensesDTO {
             id = this.id,
             name = this.name,
             amount = this.amount,
-            categoryId = this.categoryId,
+            categoryId = this.budgetCategory.id,
             yearMonth = this.yearMonth,
         ),
-        category = BudgetCategoryEntity(
-            id = this.categoryId,
-            name = this.categoryName
-        ),
+        category = this.budgetCategory.toEntity(),
         totalAmtSpent = this.totalAmtSpent,
     )
 }

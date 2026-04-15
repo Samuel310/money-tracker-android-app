@@ -1,0 +1,60 @@
+{
+  "categories" : [
+    {
+      "id": 1,
+      "name": "Essentials",
+      "info": "Non-negotiable monthly survival needs",
+      "icon": "Icons.Default.PushPin",
+      "color": "#6750A4",
+      "isDefault": true
+    },
+    {
+      "id": 2,
+      "name": "Lifestyle & Leisure",
+      "info": "Personal enjoyment and quality of life",
+      "icon": "Icons.Default.Style",
+      "color": "#7D5260",
+      "isDefault": true
+    },
+    {
+      "id": 3,
+      "name": "Savings",
+      "info": "Building the future",
+      "icon": "Icons.Default.Savings",
+      "color": "#2E7D32",
+      "isDefault": true
+    },
+    {
+      "id": 4,
+      "name": "Debts",
+      "info": "clearing the past",
+      "icon": "Icons.Default.AccountBalance",
+      "color": "#D32F2F",
+      "isDefault": true
+    },
+    {
+      "id": 5,
+      "name": "Maintenance & Rainy Day (Sinking Funds)",
+      "info": "Semi-regular expenses that pops up",
+      "icon": "Icons.Default.Handyman",
+      "color": "#D32F2F",
+      "isDefault": true
+    },
+    {
+      "id": 6,
+      "name": "Giving & Family",
+      "info": "Outward-facing expenses.",
+      "icon": "Icons.Default.VolunteerActivism",
+      "color": "#625B71",
+      "isDefault": true
+    },
+    {
+      "id": 7,
+      "name": "Education & Growth",
+      "info": "Investing in yourself.",
+      "icon": "Icons.Default.AutoStories",
+      "color": "#1976D2",
+      "isDefault": true
+    }
+  ]
+}

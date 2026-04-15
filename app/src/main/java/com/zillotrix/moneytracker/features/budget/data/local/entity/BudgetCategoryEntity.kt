@@ -9,5 +9,9 @@ import androidx.room.PrimaryKey
 data class BudgetCategoryEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
-    val name: String
+    val name: String,
+    val info: String,
+    val icon: String,
+    val color: String,
+    val isDefault: Boolean,
 )

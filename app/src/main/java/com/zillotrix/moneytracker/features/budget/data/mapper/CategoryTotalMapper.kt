@@ -6,8 +6,7 @@ import com.zillotrix.moneytracker.features.budget.domain.model.CategoryTotal
 
 fun CategoryTotalDTO.toDomain(percentage: Double): CategoryTotal {
     return CategoryTotal(
-        categoryId = this.categoryId,
-        categoryName = this.categoryName,
+        budgetCategory = this.budgetCategoryEntity.toDomain(),
         totalPlannedAmount = this.totalPlannedAmount,
         percentage = percentage,
     )
@@ -15,8 +14,7 @@ fun CategoryTotalDTO.toDomain(percentage: Double): CategoryTotal {
 
 fun CategoryTotal.toDTO(): CategoryTotalDTO {
     return CategoryTotalDTO(
-        categoryId = this.categoryId,
-        categoryName = this.categoryName,
         totalPlannedAmount = this.totalPlannedAmount,
+        budgetCategoryEntity = this.budgetCategory.toEntity(),
     )
 }

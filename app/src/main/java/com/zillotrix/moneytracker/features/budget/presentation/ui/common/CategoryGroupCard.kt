@@ -41,8 +41,8 @@ fun CategoryGroupCard(budgetInfoList: List<BudgetInfo>, categoryTotal: CategoryT
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        color = MaterialTheme.colorScheme.primary,
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        color = categoryTotal?.budgetCategory?.color ?: MaterialTheme.colorScheme.primary,
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 2.dp
     ) {
@@ -73,16 +73,16 @@ fun CategoryCard(categoryTotal: CategoryTotal, totalBudgetCount: Int){
     ) {
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            color = categoryTotal.budgetCategory.color.copy(alpha = 0.1f),
         ) {
             Box(
                 modifier = Modifier.padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ShoppingBag,
+                    imageVector = categoryTotal.budgetCategory.icon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = categoryTotal.budgetCategory.color,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -90,7 +90,7 @@ fun CategoryCard(categoryTotal: CategoryTotal, totalBudgetCount: Int){
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = categoryTotal.categoryName,
+                text = categoryTotal.budgetCategory.name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )

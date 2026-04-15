@@ -28,39 +28,29 @@ class BudgetRepositoryImpl @Inject constructor(
     private val expenseDao: ExpenseDao,
 ) : BudgetRepository {
 
-    override suspend fun setBudget(budgetInfo: BudgetInfo) : RepoResult<Boolean, String> {
+    override suspend fun setBudget(budget: Budget, budgetCategory: BudgetCategory?) : RepoResult<Boolean, String> {
         try{
-            if(budgetInfo.name.isEmpty()){
+            if(budget.name.isEmpty()){
                 return RepoResult.Error("Budget name cannot be empty")
             }
-            if(budgetInfo.amount < 0){
+            if(budget.amount < 0){
                 return RepoResult.Error("Budget amt. cannot be smaller that 0")
             }
-            if(budgetInfo.yearMonth <= 0){
+            if(budget.yearMonth <= 0){
                 return RepoResult.Error("Select a valid month")
             }
-            if(budgetInfo.categoryId < 0){
+            if(budget.categoryId < 0){
                 return RepoResult.Error("Select a valid category")
             }
-            if(budgetInfo.categoryName.isEmpty()){
+            if(budgetCategory == null || budgetCategory.name.isEmpty() || budgetCategory.id < 0){
                 return RepoResult.Error("Select a valid category")
             }
-            val budgetCategory = BudgetCategory(
-                id = budgetInfo.categoryId,
-                name = budgetInfo.categoryName
-            )
             var categoryId = categoryDao.insertCategory(budgetCategory.toEntity())
             if(categoryId <= 0){
-                categoryId = budgetInfo.categoryId
+                categoryId = budget.categoryId
             }
-            val budget = Budget(
-                id = budgetInfo.id,
-                name = budgetInfo.name,
-                amount = budgetInfo.amount,
-                categoryId = categoryId,
-                yearMonth = budgetInfo.yearMonth,
-            )
-            budgetDao.insertBudget(budget.toEntity())
+            val newBudget = budget.copy(categoryId = categoryId)
+            budgetDao.insertBudget(newBudget.toEntity())
             return RepoResult.Success(true)
         }catch (e: Exception){
             //TODO: implement logger
@@ -127,22 +117,6 @@ class BudgetRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setCategory(name: String) : RepoResult<BudgetCategory, String>  {
-        try {
-            if(name.isEmpty()){
-                return RepoResult.Error("Category name cannot be empty")
-            }
-            val id = categoryDao.insertCategory(BudgetCategoryEntity(name = name))
-            if(id <= 0){
-                return RepoResult.Error("Category name already exists")
-            }
-            return RepoResult.Success(BudgetCategory(id, name))
-        }catch (e: Exception) {
-            //TODO: implement logger
-            return RepoResult.Error("Something went wrong, Unable to create category")
-        }
-    }
-
     override fun getAllCategories(): Flow<List<BudgetCategory>> {
         return categoryDao.getAllCategories().map { budgetCategoryEntitiesList ->
             budgetCategoryEntitiesList.map { budgetCategoryEntity ->
@@ -160,7 +134,7 @@ class BudgetRepositoryImpl @Inject constructor(
             ){ total , categories, totalSpentAmt ->
                 val safeTotal = total ?: 0L
                 val categoryMap = categories.associateBy(
-                    keySelector = { it.categoryName },
+                    keySelector = { it.budgetCategoryEntity.name },
                     valueTransform = { categoryTotalEntity ->
                         val percentage = if (safeTotal == 0L) 0.0 else (categoryTotalEntity.totalPlannedAmount.toDouble() / safeTotal) * 100
                         val roundPercentage = round(percentage * 100) / 100.0
