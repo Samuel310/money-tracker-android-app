@@ -133,7 +133,7 @@ fun NewExpenseScreen(newExpenseViewModel: NewExpenseViewModel = hiltViewModel<Ne
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = state.date.toDayMonthYearFull(),
+                value = state.date?.toDayMonthYearFull() ?: "",
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Date") },

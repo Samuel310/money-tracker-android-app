@@ -20,7 +20,7 @@ class ExpenseRepositoryImpl @Inject constructor(
     override suspend fun setExpense(expense: Expense): RepoResult<Boolean, String> {
         try {
             if(expense.amount <= 0){
-                return RepoResult.Error("Amount cannot be smaller than 0")
+                return RepoResult.Error("Enter a valid amount")
             }
             if(expense.name.isEmpty()){
                 return RepoResult.Error("Name cannot be empty")
@@ -30,6 +30,9 @@ class ExpenseRepositoryImpl @Inject constructor(
             }
             if(expense.budgetYearMonth <= 0){
                 return RepoResult.Error("Invalid budget year-month selected")
+            }
+            if (expense.date.time <= 0L) {
+                return RepoResult.Error("Please select a valid date")
             }
             expenseDao.insertExpense(expense.toEntity())
             return RepoResult.Success(true)

@@ -10,7 +10,7 @@ data class NewExpenseVMState(
     val amt : String = "",
     val selectedBudget: Budget? = null,
     val budgetList: List<Budget> = emptyList(),
-    val date: Date = Date(),
+    val date: Date? = Date(),
     val yearMonth: Int = YearMonth.now().toIntYYYYMM(),
     val isLoading : Boolean = false,
     val showDatePickerDialog: Boolean = false,

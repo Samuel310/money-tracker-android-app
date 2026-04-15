@@ -33,8 +33,8 @@ class BudgetRepositoryImpl @Inject constructor(
             if(budget.name.isEmpty()){
                 return RepoResult.Error("Budget name cannot be empty")
             }
-            if(budget.amount < 0){
-                return RepoResult.Error("Budget amt. cannot be smaller that 0")
+            if(budget.amount <= 0){
+                return RepoResult.Error("Enter a valid budget amount")
             }
             if(budget.yearMonth <= 0){
                 return RepoResult.Error("Select a valid month")

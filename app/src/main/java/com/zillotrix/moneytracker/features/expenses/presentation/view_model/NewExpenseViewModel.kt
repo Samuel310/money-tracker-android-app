@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.zillotrix.moneytracker.core.utils.RepoResult
 import com.zillotrix.moneytracker.core.utils.toPaisa
 import com.zillotrix.moneytracker.core.utils.toIntYYYYMM
+import com.zillotrix.moneytracker.core.utils.toYearMonth
 import com.zillotrix.moneytracker.features.budget.domain.model.Budget
 import com.zillotrix.moneytracker.features.budget.domain.repository.BudgetRepository
 import com.zillotrix.moneytracker.features.expenses.domain.model.Expense
@@ -31,7 +32,10 @@ class NewExpenseViewModel @Inject constructor(
 
     private val initialYearMonth = savedStateHandle.get<Int>("yearMonth") ?: YearMonth.now().toIntYYYYMM()
 
-    private val _state = MutableStateFlow(NewExpenseVMState().copy(yearMonth = initialYearMonth))
+    private val _state = MutableStateFlow(NewExpenseVMState().copy(
+        yearMonth = initialYearMonth,
+        date = if(initialYearMonth.toYearMonth().month.value != YearMonth.now().month.value) null else Date()
+    ))
     val state: StateFlow<NewExpenseVMState> = _state
 
     private val _onError = MutableSharedFlow<String>()
@@ -131,7 +135,7 @@ class NewExpenseViewModel @Inject constructor(
                     amount = _state.value.amt.toPaisa(),
                     budgetId = _state.value.selectedBudget?.id ?: 0L,
                     budgetYearMonth = _state.value.selectedBudget?.yearMonth ?: 0,
-                    date = _state.value.date,
+                    date = _state.value.date ?: Date(0),
                 )
             )
             when(res){

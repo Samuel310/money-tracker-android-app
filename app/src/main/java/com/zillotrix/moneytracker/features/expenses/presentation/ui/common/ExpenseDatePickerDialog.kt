@@ -13,7 +13,7 @@ import java.util.Date
 
 @Composable
 fun ExpenseDatePickerDialog(
-    selectedDate: Date,
+    selectedDate: Date?,
     yearMonth: YearMonth,
     onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
@@ -21,7 +21,7 @@ fun ExpenseDatePickerDialog(
     val (startOfMonth, endOfMonth) = yearMonth.getMonthRange()
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = selectedDate.time.coerceIn(startOfMonth, endOfMonth),
+        initialSelectedDateMillis = selectedDate?.time?.coerceIn(startOfMonth, endOfMonth),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return utcTimeMillis in startOfMonth..endOfMonth
